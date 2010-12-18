@@ -1,19 +1,22 @@
-=== All in One Video Pack ===
-Contributors: Kaltura
-Donate link: http://www.kaltura.org/
+=== x7Host's Videox7 UGC Plugin ===
+Contributors: rtcwp07, Kaltura
+Donate link: http://www.kalturecehost.com/
 Tags: plugin, admin, images, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
-Requires at least: 2.5
-Tested up to: 2.9.2
-Stable tag: 2.4.2
+Requires at least: 3.0
+Tested up to: 3.0.3
+Stable tag: 0.9 Beta
 
 Easily add full video capabilities to your blog.
 
 == Description ==
 
-This is not just another video embed tool - it includes every functionality you might need for video and rich-media, including the ability to upload/ record/import videos directly to your post, edit and remix content with an online video editor, enable video responses, manage and track your video content, create playlists and much more... And Kaltura covers all hosting and streaming costs for FREE up to 10GB.
+This plugin is a fork of Kaltura's original "All In One Video Pack" plugin, enhanced in many ways and designed from the bottom up to be easily integrated with the self-hosted Kaltura Community Edition.
+
+This is not just another video embed tool - it includes every functionality you might need for video and rich-media, including the ability to upload/ record/import videos directly to your post, edit and remix content with both a standard and advanced video editor, enable video and webcam comments, manage and track your video content, create and edit playlists and much more.
 
 Highlights:
 
+* Give your logged in Wordpress users the ability to upload/edit/remix/share/post their media on your blog!  This is true user generated content!
 * Upload, record from webcam and import all rich-media directly to your blog post; 
 * Edit and remix videos using Kaltura's online full-featured video editor; 
 * Easily import all rich media (video, audio, pictures...) from other sites and social networks, such as Flickr, CCMixter, Jamendo, New York Public Library, any URL on the web etc.; 
@@ -31,29 +34,20 @@ Highlights:
 * Easy installation that takes just 4 steps and a few minutes. 
 
 
-Version 2.4
+Version 0.9 Beta
 -------------
-* MultiUser Support
-* New default players
-* Option to create custom video players within the video management console, and use them within WordPress
-* Option to automatically generate video posts using categories from within the user's video management console
-* Improved playback performance
-* Removed 200MB per upload restriction 
+* First fork from All In One and merge with Videox7
 
-Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://www.kaltura.org/forums/applications-and-cms-extensions/wordpress-kaltura-plugin-all-one-video-pack-forums
-
-View video walk-throughs of new features in version 2.4 here: http://wordpress.kaltura.org
+Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://www.kalturacehost.com
 
 
 Kaltura Hosted Solution - Free Trial and Affordable Packages
 -------------
-When you signup with Kaltura.com (http://corp.kaltura.com/about/signup) you get 10GB free hosting and streaming using Kaltura's world-class CDNs and hosting facilities, as well as premium support, SLAs and more. Get started with your free trial today!
-For more information on our packages beyond 10GB, please contact us and we'll get right back to you: http://corp.kaltura.com/about/contact
+You still have the option to hook this plugin up to the Kaltura.com SaaS if you like.  Or you can get your own KalturaCE cloud video server from x7Host...
 
 Self-Hosted Solution
 -------------
-You can also connect your Kaltura Video extension to the Kaltura Community Edition - the self-hosted, community supported version of Kaltura's Open Source Online Video Platform - all behind your own firewall and on your own servers for free.
-Learn more about the Community Edition on the Project page: http://www.kaltura.org/project/community_edition_video_platform
+With a cloud video server from x7Host (www.x7host.com), you can get your own enterprise class online video platform on your own server in the clouds, that grows and shrinks as you need it to.  Whether you have a small personal video blog or hundreds of thousands of video viewers a month, x7Host can give you the cloud video server you need.  This plugin is easily integrated with the x7Host cloud servers.
 
 == Installation ==
 
@@ -63,6 +57,7 @@ If you are installing this plugin for the first time:
 2. Paste the 'all-in-one-video-pack' directory under the '/wp-content/plugins/' directory
 3. Activate the plugin through the 'Plugins' menu in the WordPress admin application
 4. Go to Settings > All in One Video Pack to setup the plugin
+5. Enter additional configuration settings in the 'x7 UGC Settings' page
 
 If you are upgrading your current version of the plugin, or if you're upgrading from the Interactive Video plugin: 
 
@@ -90,12 +85,7 @@ Solution 2: Remove any blocking of external calls from the server.
 = I can't activate the plugin, it presents an error message after clicking Activate on the plugin list =
 It might be caused due to an old version of PHP.
 
-The Kaltura wp plugin is written for PHP4 and PHP5 with the use of classes and static members, these are not supported on earlier versions of PHP.
-
-Upgrade to PHP5 / later. If upgrading doesn't solve this issue or you already have PHP5 on your server, post the error information on the forum and we'll help you. (http://www.kaltura.org/forums/applications-and-cms-extensions/wordpress-kaltura-plugin-all-one-video-pack-forums).
-
-Support for PHP4 was added on version 1.0
-
+This plugin is written for PHP4 and PHP5 with the use of classes and static members, these are not supported on earlier versions of PHP.
 
 == Screenshots ==
 
@@ -107,11 +97,3 @@ Support for PHP4 was added on version 1.0
 6. Create Video Posts
 7. The plugin settings page
 8. Video Editor
-
-== Join the Kaltura Community and Contribute to Open Source Video! ==
-
-Creative potential, innovation, and competition all correlate directly with the balance of freedoms and constraints we face in sharing, manipulating, finding, and watching video. For instance, to create remixes or mash-ups, video artists need access to the original materials in order to reformulate their new work. In an ideal world, everyday users will be able to easily copy and paste portions of video, as they already can with text. Of course the benefits of a more open system will go far beyond remixing, cutting, and pasting - when open video standards and formats are widely embraced, it will be possible to index, search, and access the medium much as we do text. This will be the real revolution for video. 
-
-Kaltura is a founding member of the Open Video Alliance, a group of organizations, developers, creators, and academics all striving to foster the open-source online video revolution.  We invite the entire community to join us in building the first open-source platform for interactive and collaborative video. We look forward to your input, feedback, time, and support.
-
-Join the community and help us Open Source Video - http://www.kaltura.org/

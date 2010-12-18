@@ -1,3 +1,14 @@
+Version 0.9 Beta
+________________
+* Original All In One forked and merged with x7Host's Videox7 Plugin
+* Add Kaltura Contribution Wizard embedding shortcode
+* Add User Contributed Media shortcode
+* Add User Contributed Mixes shortcode
+* Add Make Playlist shortcode
+* Add View and Edit Playlists shortcode
+* Add XML-RPC publishing of media, mixes and playlists
+* Add view user contributed posts shortcode
+
 Version 2.4.2
 -------------
 * Removed link back to Kaltura for statistics gathering.
