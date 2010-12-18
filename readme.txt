@@ -4,7 +4,7 @@ Donate link: http://www.kalturecehost.com/
 Tags: plugin, admin, images, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
 Tested up to: 3.0.3
-Stable tag: 0.9 Beta
+Stable tag: 2.5.0
 
 Easily add full video capabilities to your blog.
 
@@ -34,7 +34,7 @@ Highlights:
 * Easy installation that takes just 4 steps and a few minutes. 
 
 
-Version 0.9 Beta
+Version 2.5.0
 -------------
 * First fork from All In One and merge with Videox7
 
