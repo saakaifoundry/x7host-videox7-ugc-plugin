@@ -614,7 +614,7 @@ if ($widget=="useruploads"){
 		#x7form { width: 500px; }
 		.tooltip {
 				display:none;
-				background:transparent url($pluginurl/all-in-one-video-pack/images/black_arrow.png);
+				background:transparent url($pluginurl/x7host-videox7-ugc-plugin/images/black_arrow.png);
 				font-size:12px;
 				height:70px;
 				width:160px;
@@ -642,7 +642,7 @@ if ($widget=="useruploads"){
 				var eid = jQuery("a#x7aeditchange").attr("title");
 				var name = jQuery("a#x7aeditchange").attr("name");
 				jQuery.post(
-					"$pluginurl/all-in-one-video-pack/x7mixcreate.php",
+					"$pluginurl/x7host-videox7-ugc-plugin/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '1', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
 					function ( response ){
 						jQuery('div#x7form').hide('slow');
@@ -662,7 +662,7 @@ if ($widget=="useruploads"){
 				var eid = jQuery("a#x7aedit2change").attr("title");
 				var name = jQuery("a#x7aedit2change").attr("name");
 				jQuery.post(
-					"$pluginurl/all-in-one-video-pack/x7mixcreate.php",
+					"$pluginurl/x7host-videox7-ugc-plugin/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '2', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
 					function ( response ){
 						jQuery('div#x7form').hide('slow');
@@ -787,7 +787,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/all-in-one-video-pack/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/x7host-videox7-ugc-plugin/images/x7loader.gif'></p></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=media&action=list",
@@ -809,7 +809,7 @@ DELETE_JS;
 				<a id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</a>
 				<br><br>
 				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/all-in-one-video-pack/x7post.php" method="post">
+				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7host-videox7-ugc-plugin/x7post.php" method="post">
 				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
 				<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
 				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
@@ -897,7 +897,7 @@ ENTRY_DIV;
 		#x7form { width: 500px; }
 		.tooltip {
 				display:none;
-				background:transparent url($pluginurl/all-in-one-video-pack/images/black_arrow.png);
+				background:transparent url($pluginurl/x7host-videox7-ugc-plugin/images/black_arrow.png);
 				font-size:12px;
 				height:70px;
 				width:160px;
@@ -1052,7 +1052,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/all-in-one-video-pack/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/x7host-videox7-ugc-plugin/images/x7loader.gif'></p></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=mixing&action=list",
@@ -1074,7 +1074,7 @@ DELETE_JS;
 				<a onClick="x7VidPost();">[CANCEL]</a>
 				<br><br>
 				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/all-in-one-video-pack/x7post.php" method="post">
+				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7host-videox7-ugc-plugin/x7post.php" method="post">
 				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
 				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
 				<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
