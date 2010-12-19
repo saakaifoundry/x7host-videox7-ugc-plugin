@@ -1,4 +1,4 @@
-Version 0.9 Beta
+Version 2.5.0
 ________________
 * Original All In One forked and merged with x7Host's Videox7 Plugin
 * Add Kaltura Contribution Wizard embedding shortcode
