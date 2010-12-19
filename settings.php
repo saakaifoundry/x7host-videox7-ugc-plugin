@@ -1,6 +1,6 @@
 <?php
-	define("KALTURA_SERVER_URL", "http://zeus.exseven.com");
-	define("KALTURA_CDN_URL", "http://zeus.exseven.com");
+	define("KALTURA_SERVER_URL", "http://www.kaltura.com");
+	define("KALTURA_CDN_URL", "http://www.kaltura.com");
 	define("KALTURA_ANONYMOUS_USER_ID", "Anonymous");
 	define("KALTURA_KSE_UICONF", 1727886);
 	define("KALTURA_KCW_UICONF", 1727883);
