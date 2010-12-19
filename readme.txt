@@ -58,6 +58,7 @@ If you are installing this plugin for the first time:
 3. Activate the plugin through the 'Plugins' menu in the WordPress admin application
 4. Go to Settings > All in One Video Pack to setup the plugin
 5. Enter additional configuration settings in the 'x7 UGC Settings' page
+6. IMPORTANT!  If you are using your own KalturaCE server, you MUST edit the "settings.php" file and change the variables "KALTURA_SERVER_URL" and "KALTURA_CDN_URL" to be the URL of your KalturaCE server - do this BEFORE configuring/connecting the plugin through the "All In One Settings" page!
 
 If you are upgrading your current version of the plugin, or if you're upgrading from the Interactive Video plugin: 
 
