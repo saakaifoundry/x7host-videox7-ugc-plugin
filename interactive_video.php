@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: All in One Video Pack
-Plugin URI: http://kaltura.org/
-Description: This is not just another video embed tool - it includes every functionality you might need for video and rich-media, including playing, uploading and editing.  
-Version: 2.4.2
-Author: Kaltura
-Author URI: http://kaltura.org/
+Plugin Name: x7Host's Videox7 UGC Plugin
+Plugin URI: http://www.kalturacehost.com
+Description: This is not just another video embed tool - it includes every functionality you and your Wordpress users might need for video and rich-media, including playing, uploading and editing.  
+Version: 2.5.1
+Author: rtcwp07
+Author URI: http://www.x7host.com
 */
 
 define("KALTURA_PLUGIN_FILE", __FILE__);
