@@ -545,6 +545,8 @@ if (is_user_logged_in()){
 	
 	$x7bloghome = get_bloginfo('url');
 	$x7bloghomeget = urlencode($x7bloghome);
+	$pluginurl = KalturaHelpers::getPluginUrl();
+	$pluginurlget = urlencode($pluginurl);
 	
 	$x7uiconfid = get_option('x7uiconfid');
 	$x7pluiconfid = get_option('x7pluiconfid');
@@ -574,8 +576,13 @@ if ($widget=="kcw"){
 			allowNetworking: "all",
 			wmode: "opaque"
 		};
-		var flashVars = {"Permissions":"1","partnerId":"$x7kalpartnerid","uid":"$user_login","ks":"$ks","showCloseButton":"false"};
+		var flashVars = {"Permissions":"1","partnerId":"$x7kalpartnerid","uid":"$user_login","ks":"$ks","afterAddEntry":"onContributionWizardAfterAddEntry","showCloseButton":"false"};
 		swfobject.embedSWF("$x7server/kcw/ui_conf_id/1727883", "kcw", "680", "360", "9.0.0", false, flashVars, params);
+		
+		function onContributionWizardAfterAddEntry(entries) {
+		        alert("Media successfully uploaded.  Please allow time for conversion.  Page will refresh now.");
+			window.location.reload(true);
+		}
 		</script>
 X7KCW;
 
@@ -595,13 +602,11 @@ if ($widget=="useruploads"){
 		
 		//SET RPCURL XMLRPC FILE VALUE
 		$x7rpcurl = $x7bloghome . "/xmlrpc.php";
-		$x7fullplugurl = plugins_url('/ixr.php', __FILE__);
-		$playurl = plugins_url('x7vidplayer.php', __FILE__);
-                        $pluginurl = plugins_url();
-                        $pluginurlget = urlencode($pluginurl);
-                        $advancedediturl = plugins_url('x7advancededitor.php', __FILE__);
-			$standardediturl = plugins_url('x7standardeditor.php', __FILE__);
-		//GET CATEGORIES LIST
+		$x7fullplugurl = $pluginurl."/ixr.php";
+		$playurl = $pluginurl."/x7vidplayer.php";
+                $advancedediturl = $pluginurl."/x7advancededitor.php";
+		$standardediturl = $pluginurl."/x7standardeditor.php";
+		//GET WORDPRESS CATEGORIES LIST
 		$categories = get_categories('hide_empty=0'); 
 			foreach ($categories as $cat) {
 				$option .= "<option value=\"$cat->cat_name\">$cat->cat_name</option>";
@@ -609,22 +614,7 @@ if ($widget=="useruploads"){
 		
 		//EMBED DELETE JAVASCRIPT FUNCTION AND POST FUNCTION AND GET VARIABLE READER
 		$return.= <<<DELETE_JS
-		
-		<style type="text/css">
-		#x7form { width: 500px; }
-		.tooltip {
-				display:none;
-				background:transparent url($pluginurl/x7host-videox7-ugc-plugin/images/black_arrow.png);
-				font-size:12px;
-				height:70px;
-				width:160px;
-				padding:25px;
-				color:#fff;	
-			}
-		</style>
-
 		<script type="text/javascript">
-		
 			function x7VidPlay()
 			{
 				var eid = jQuery("a#x7aplaychange").attr("title");
@@ -642,7 +632,7 @@ if ($widget=="useruploads"){
 				var eid = jQuery("a#x7aeditchange").attr("title");
 				var name = jQuery("a#x7aeditchange").attr("name");
 				jQuery.post(
-					"$pluginurl/x7host-videox7-ugc-plugin/x7mixcreate.php",
+					"$pluginurl/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '1', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
 					function ( response ){
 						jQuery('div#x7form').hide('slow');
@@ -662,7 +652,7 @@ if ($widget=="useruploads"){
 				var eid = jQuery("a#x7aedit2change").attr("title");
 				var name = jQuery("a#x7aedit2change").attr("name");
 				jQuery.post(
-					"$pluginurl/x7host-videox7-ugc-plugin/x7mixcreate.php",
+					"$pluginurl/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '2', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
 					function ( response ){
 						jQuery('div#x7form').hide('slow');
@@ -683,7 +673,7 @@ if ($widget=="useruploads"){
 				if (confirm("Warning! This will affect all mixes that include entry ID: " + delid + ". Continue?"))
 				{ 
 				    jQuery.post(
-				       "$pluginurl/x7video/x7delete.php",
+				       "$pluginurl/x7delete.php",
 				       {'x7bloghome': '$x7bloghome', 'ks': "$ks", 'x7entrytype': 'media', 'eid': delid, 'x7server': "$x7server"},
 				       function ( response ){
 					      jQuery("#x7entriestable tbody tr [title="+delid+"]").remove();
@@ -787,7 +777,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/x7host-videox7-ugc-plugin/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=media&action=list",
@@ -804,12 +794,19 @@ DELETE_JS;
 				<span style="float:right"><strong>Embed code:</strong><br><textarea id="x7embedchange" cols="25" rows="5"></textarea></span>
 				<a onClick="x7VidPlay()" id="x7aplaychange" title=""><strong>Media Entry Details<br><br>
 				<img id="x7imgchange" src=""><br><br>[PLAY]</a> |
-				<a id="x7aeditchange" name="" title="" onClick="x7VidEditStandard()">[CREATE STANDARD MIX]</a> |
-				<a id="x7aedit2change" name="" title="" onClick="x7VidEditAdvanced()">[CREATE ADVANCED MIX]</a> |
-				<a id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</a>
+X7POSTFORM;
+			if ($x7allowstandard == "yes") {
+				$return .= '<a id="x7aeditchange" name="" title="" onClick="x7VidEditStandard()">[CREATE STANDARD MIX]</a> |';
+			}
+			if ($x7allowadvanced == "yes") {
+				$return .= '<a id="x7aedit2change" name="" title="" onClick="x7VidEditAdvanced()">[CREATE ADVANCED MIX]</a> |';
+			}
+			$return .= <<<X7POSTFORM2
+				<a id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</a> |
+				<a onClick="x7VidPost();">[CANCEL]</a>
 				<br><br>
 				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7host-videox7-ugc-plugin/x7post.php" method="post">
+				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
 				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
 				<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
 				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
@@ -830,35 +827,31 @@ DELETE_JS;
 				<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
 				<label for="password">Wordpress Password:</label><br />
 				<input type="password" name="password" id="password" size="20" ><br />
-				<input type="submit" value="[Post]" name="submit" id="submit" ></form>
-				<a onClick="x7VidPost();">[Cancel]</a>
+				<input type="submit" value="[POST]" name="submit" id="submit" ></form>
 				</div>
 			</div>
-X7POSTFORM;
+X7POSTFORM2;
 
 			$return .= "<div id='x7tablewrap'><table id='x7entriestable'><thead><tr><th>Name</th><th>ID</th><th>Description</th><th>Duration</th><th>When Created</th></tr></thead><tbody>";
 			
-		foreach ($xmlresult->result->objects->item as $mixentry) {
-			$eid = $mixentry->id;
-			$thumb = $mixentry->thumbnailUrl;
-			$userId = $mixentry->userId;
-			$name = $mixentry->name;
-			$description = $mixentry->description;
-			$duration = $mixentry ->duration;
-			$createdat = (string) $mixentry->createdAt;
+		foreach ($xmlresult->result->objects->item as $mediaentry) {
+			$eid = $mediaentry->id;
+			$thumb = $mediaentry->thumbnailUrl;
+			$userId = $mediaentry->userId;
+			$name = $mediaentry->name;
+			$description = $mediaentry->description;
+			$duration = $mediaentry->duration;
+			$createdat = (string) $mediaentry->createdAt;
 			$createdat = date(DATE_RFC822, $createdat);
-                        //only add if the current user is the uploader
-			//if ($userId == $user_login) {
 				$return .= <<<ENTRY_DIV
 				<tr title="$eid" name="$name">
-					<td class="tt" title="Click me to open administration menu!">$name</td>
+					<td class="tt" title="Click to open media management panel.">$name</td>
 					<td>$eid</td>
 					<td>$description</td>
 					<td>$duration</td>
 					<td>$createdat</td>
 				</tr>
 ENTRY_DIV;
-			//} //end if user login
 		} //end foreach
 		//End x7entries table
 		$return .= "</tbody></table></div>";
@@ -878,12 +871,11 @@ ENTRY_DIV;
 		
 		//SET RPCURL XMLRPC FILE VALUE
 		$x7rpcurl = $x7bloghome . "/xmlrpc.php";
-		$x7fullplugurl = plugins_url('/ixr.php', __FILE__);
-		$playurl = plugins_url('x7vidplayer.php', __FILE__);
-                        $pluginurl = plugins_url();
-                        $pluginurlget = urlencode($pluginurl);
-                        $advancedediturl = plugins_url('x7advancededitor.php', __FILE__);
-			$standardediturl = plugins_url('x7standardeditor.php', __FILE__);
+		$x7fullplugurl = $pluginurl."/ixr.php";
+		$playurl = $pluginurl."/x7vidplayer.php";
+                $advancedediturl = $pluginurl."/x7advancededitor.php";
+		$standardediturl = $pluginurl."/x7standardeditor.php";
+		
 		//GET CATEGORIES LIST
 		$categories = get_categories('hide_empty=0'); 
 			foreach ($categories as $cat) {
@@ -892,20 +884,6 @@ ENTRY_DIV;
 		
 		//EMBED DELETE JAVASCRIPT FUNCTION AND POST FUNCTION AND GET VARIABLE READER
 		$return.= <<<DELETE_JS
-		
-		<style type="text/css">
-		#x7form { width: 500px; }
-		.tooltip {
-				display:none;
-				background:transparent url($pluginurl/x7host-videox7-ugc-plugin/images/black_arrow.png);
-				font-size:12px;
-				height:70px;
-				width:160px;
-				padding:25px;
-				color:#fff;	
-			}
-		</style>
-
 		<script type="text/javascript">
 		
 			function x7VidPlay()
@@ -947,7 +925,7 @@ ENTRY_DIV;
 				if (confirm("Warning!  This will affect all playlists that contain mix id: " + delid + ". Continue?"))
 				{ 
 				    jQuery.post(
-				       "$pluginurl/x7video/x7delete.php",
+				       "$pluginurl/x7delete.php",
 				       {'x7bloghome': '$x7bloghome', 'ks': "$ks", 'x7entrytype': 'mix', 'eid': delid, 'x7server': "$x7server"},
 				       function ( response ){
 					      jQuery("#x7entriestable tbody tr [title="+delid+"]").remove();
@@ -966,7 +944,7 @@ ENTRY_DIV;
 			{
 				if (postout == 'false'){
 					formValidate();
-					var thumburl = '$x7server/p/1/sp/$x7kalpartnerid/thumbnail/entry_id/'+eid+'/width/150/height/120';
+					var thumburl = '$x7server/p/1/sp/10000/thumbnail/entry_id/'+eid+'/width/150/height/120';
 					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="330" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" data="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" /><a href="http://corp.kaltura.com">video platform</a> <a href="http://corp.kaltura.com/technology/video_management">video management</a> <a href="http://corp.kaltura.com/solutions/overview">video solutions</a> <a href="http://corp.kaltura.com/technology/video_player">video player</a> <a rel="media:thumbnail" href="$x7server/p/$x7kalpartnerid/sp/$x7kalsubpartnerid/thumbnail/entry_id/'+eid+'/width/120/height/90/bgcolor/000000/type/2" /> <span property="dc:description" content="" /><span property="media:title" content="x7Video" /> <span property="media:width" content="400" /><span property="media:height" content="330" /> <span property="media:type" content="application/x-shockwave-flash" /><span property="media:duration" content="{DURATION}" /> </object>';
 					
 					jQuery('a#x7aplaychange').attr("title",eid);
@@ -1052,7 +1030,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/x7host-videox7-ugc-plugin/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=mixing&action=list",
@@ -1074,7 +1052,7 @@ DELETE_JS;
 				<a onClick="x7VidPost();">[CANCEL]</a>
 				<br><br>
 				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7host-videox7-ugc-plugin/x7post.php" method="post">
+				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
 				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
 				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
 				<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
@@ -1094,7 +1072,7 @@ DELETE_JS;
 				<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
 				<label for="password">Wordpress Password:</label><br />
 				<input type="password" name="password" id="password" size="20" ><br />
-				<input type="submit" value="[Post]" name="submit" id="submit" ></form>
+				<input type="submit" value="[POST]" name="submit" id="submit" ></form>
 				</div>
 			</div>
 X7POSTFORM;
@@ -1116,7 +1094,7 @@ X7POSTFORM;
 				$editortypestr = "Advanced";
 				};
 			$createdat = (string) $mixentry->createdAt;
-			$createdat = date(DATE_RFC822, $createdat);
+			$createdat = date(DATE_RSS, $createdat);
                         //only add if the current user is the uploader
 			//if ($userId == $user_login) {
 				$return .= <<<ENTRY_DIV
@@ -1234,24 +1212,15 @@ if ($widget=="makeplaylist"){
 		if (!$ks)
 			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
 		$ksget = urlencode($ks);
-		$plugin_url = KalturaHelpers::getPluginUrl();
 		
 		//add javascript and info box TODO - pull out all CSS and put into external file
 		$return .= <<<INFOBOX
-
-		<style type="text/css">
-			#vidlist { list-style-type: none; margin: 0px; padding: 0px; border: dashed; border-width: thin; }
-			#playlist { width: 153px; height: 110px; list-style-type: none; margin: 0px; padding: 0px; border: dashed; border-width: thin; }
-			#playlist li, #vidlist li { padding: 5px; font-size: 1.2em; width: 135px; height: 100px; border: dashed; border-width: thin; }
-			#vidlistdiv, #betweendiv, #playlistdiv { float: left; padding:15px; }
-			#betweendiv { padding-top: 120px; }
-			textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }
-		</style>
+		
 		<script type="text/javascript">
 		
 		//list users created playlists
 		jQuery(document).ready(function() {
-		//jQuery('#x7loading').html('<p><img border="0" src="$plugin_url/images/x7loader.gif"></p>');
+		//jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
 		jQuery("#vidlist, #playlist").sortable({
 			connectWith: '.connectedSortable',
 			revert: 'true',
@@ -1291,9 +1260,9 @@ if ($widget=="makeplaylist"){
 			}
 			if (valError != "error")
 			{
-				jQuery('#x7loading').html('<p><img border="0" src="$plugin_url/images/x7loader.gif"></p>');
+				jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
 				jQuery.post(
-					"$plugin_url/x7listadd.php",
+					"$pluginurl/x7listadd.php",
 					{'x7server': "$x7server", 'x7kalpartnerid': "$x7kalpartnerid", 'ks': "$ks", 'eids[]': arrEids, 'listname': listname, 'ul': "$user_login", 'x7bloghome': "$x7bloghome"},
 					function ( data ){
 						jQuery("#x7loading").html('');
@@ -1398,8 +1367,6 @@ if ($widget=="userplaylists"){
 		if (!$ks)
 			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
 		$ksget = urlencode($ks);
-		$pluginurl = KalturaHelpers::getPluginUrl();
-		$pluginurlget = urlencode($pluginurl);
 		
 		//SET RPCURL XMLRPC FILE VALUE
 		$x7rpcurl = $x7bloghome . "/xmlrpc.php";
@@ -1414,87 +1381,6 @@ if ($widget=="userplaylists"){
 		
 		//add javascript and styles
 		$return .= <<<USERPLJS
-		
-		<style type="text/css">
-		
-			#x7wrapdiv, #x7loading { display: none; }
-			#sortable, #trash { list-style-type: none; margin: 0; padding: 0; width: 100px; }
-			#sortable li, #trash li { margin: 0 5px 5px 5px; padding: 5px; width: 90px; height: 60px; }
-			html>body #sortable li { height: 61px; line-height: 1.2em; }
-			html>body #trash li { height: 91px; line-height: 1.2em; }
-			.ui-state-highlight { height: 1.5em; line-height: 1.2em; }
-			textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }	    
-			/* root element for scrollable */
-.vertical {  
-	
-	/* required settings */
-	position:relative;
-	overflow:hidden;	
-
-	/* vertical scrollers have typically larger height than width */	
-	height: 270px;	 
-	width: 550px;
-	border-top:1px solid #ddd;	
-}
-
-/* root element for scrollable items */
-.items {	
-	position:absolute;
-	
-	/* this time we have very large space for height */	
-	height:20000em;	
-	margin: 0px;
-}
-
-/* single scrollable item */
-.item {
-	border-bottom:1px solid #ddd;
-	margin:10px 0;
-	padding:15px;
-	font-size:12px;
-	height:100px;
-}
-
-/* elements inside single item */
-.item img {
-	float:left;
-	margin-right:20px;
-	height:90px;
-	width:110px;
-}
-
-.item h3 {
-	margin:0 0 5px 0;
-	font-size:16px;
-	color:#456;
-	font-weight:normal;
-}
-
-/* the action buttons above the scrollable */
-#actions {
-	width:500px;
-	margin:30px 0 10px 0;	
-}
-
-#actions a {
-	font-size:11px;		
-	cursor:pointer;
-	color:#666;
-}
-
-#actions a:hover {
-	text-decoration:underline;
-	color:#000;
-}
-
-.disabled {
-	visibility:hidden;		
-}
-
-.next {
-	float:right;
-}	
-		</style>
 		<script type="text/javascript">
 		//Function that retrieves URL get variables
 			function getUrlVars()
@@ -1726,12 +1612,8 @@ function kaltura_shortcode($attrs)
 	$playerId 		= "kaltura_player_" . $randId;
 
 	$link = '';
-	$link .= '<a href="http://corp.kaltura.com/">open source video</a>, ';
-	$link .= '<a href="http://corp.kaltura.com/">online video platform</a>, ';
-	$link .= '<a href="http://corp.kaltura.com/video_platform/video_streaming">video streaming</a>, ';
-	$link .= '<a href="http://corp.kaltura.com/solutions/video_solutions">video solutions</a>';
 	
-	$powerdByBox ='<div class="poweredByKaltura" style="width: ' . $embedOptions["width"] . 'px; "><div><a href="http://corp.kaltura.com/video_platform/video_player" target="_blank">Video Player</a> by <a href="http://corp.kaltura.com/" target="_blank">Kaltura</a></div></div>';
+	$powerdByBox ='';
 	
 	if ($isComment)
 	{
