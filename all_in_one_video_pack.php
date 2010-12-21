@@ -259,8 +259,8 @@ function kaltura_print_js($content)
 {
 	$content[] = 'kaltura';
 	$content[] = 'jquery';
-	$content[] = 'kaltura_swfobject_1.5';
 	$content[] = 'swfobject-script';
+	$content[] = 'swfobject-script15';
 	$content[] = 'jquerytools';
 	$content[] = 'jqueryui-script';
 	$content[] = 'shadowbox-script';
@@ -277,34 +277,41 @@ function kaltura_print_js($content)
 function kaltura_register_js() 
 {
 	$plugin_url = KalturaHelpers::getPluginUrl();
-	wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
-	//register swfobject for flash embedding
-    wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, true);
-    //unregister WP's jquery and register newest jquery
-    wp_deregister_script('jquery');
-    //includes jquery tools ui
-    wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js', false, false, true);
-    wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, true);
-    //register newest jquery ui
-	wp_register_script('jqueryui-script', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js', false, false, true);
-	//register shadowbox
-	wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, true);
-    //register custom x7js
-	wp_register_script('x7ugc-script', $plugin_url . '/js/x7js.js', false, false, true);
-	//register form validator
-	wp_register_script('x7validator-script', $plugin_url . '/js/validator.js', false, false, true);
-	//register datatables
-	wp_register_script('x7datatables-script', $plugin_url . '/js/jquery.dataTables.min.js', false, false, true);
-	if (is_admin())
+	if ( is_admin() ) {
 		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version());
-	wp_register_script('kaltura_swfobject_1.5', $plugin_url . '/js/swfobject.js?v'.kaltura_get_version(), array(), '1.5');
+		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
+		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+	}
+	if( !is_admin() ){
+		wp_deregister_script('jquery'); 
+		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4'); 
+		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+	//register swfobject for flash embedding
+		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, true);
+		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
+	//unregister WP's jquery and jquery-ui and register newest jquery
+		//wp_deregister_script('jquery');
+
+	//includes jquery tools ui
+		wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, true);
+	//register newest jquery ui
+		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', false, false, true);
+	//register shadowbox
+		wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, true);
+	//register custom x7js
+		wp_register_script('x7ugc-script', $plugin_url . '/js/x7js.js', false, false, true);
+	//register form validator
+		wp_register_script('x7validator-script', $plugin_url . '/js/validator.js', false, false, true);
+	//register datatables
+		wp_register_script('x7datatables-script', $plugin_url . '/js/jquery.dataTables.min.js', false, false, true);
+	}
 }
 
 //enqueue styles and scripts
 add_action('after_setup_theme', 'enqueue_my_styles');
 function enqueue_my_styles(){
 	//jquery ui style
-	wp_enqueue_style('jqueryui-style', plugins_url( 'css/smoothness/jquery-ui-1.8.4.custom.css', __FILE__ ));
+	wp_enqueue_style('jqueryui-style', plugins_url( 'css/jqueryui/jquery-ui-1.8.7.custom.css', __FILE__ ));
 	//shadowbox (lightbox) style
 	wp_enqueue_style('shadowbox-style', plugins_url( 'css/sbox/shadowbox.css', __FILE__ ));
 	//x7video custom style
@@ -617,7 +624,7 @@ if ($widget=="useruploads"){
 		<script type="text/javascript">
 			function x7VidPlay()
 			{
-				var eid = jQuery("a#x7aplaychange").attr("title");
+				var eid = jQuery("#x7aplaychange").attr("title");
 				var playurl = '$playurl'+'?eid='+eid+'&x7kalpartnerid=$x7kalpartnerid&x7bloghomeget=$x7bloghomeget&x7server=$x7serverget&x7uiconfid=$x7adminuiconfid';
 				Shadowbox.open({
 					content: playurl,
@@ -629,8 +636,8 @@ if ($widget=="useruploads"){
 			
 			function x7VidEditStandard()
 			{
-				var eid = jQuery("a#x7aeditchange").attr("title");
-				var name = jQuery("a#x7aeditchange").attr("name");
+				var eid = jQuery("#x7aeditchange").attr("title");
+				var name = jQuery("#x7aeditchange").attr("name");
 				jQuery.post(
 					"$pluginurl/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '1', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
@@ -649,8 +656,8 @@ if ($widget=="useruploads"){
 			
 			function x7VidEditAdvanced()
 			{
-				var eid = jQuery("a#x7aedit2change").attr("title");
-				var name = jQuery("a#x7aedit2change").attr("name");
+				var eid = jQuery("#x7aedit2change").attr("title");
+				var name = jQuery("#x7aedit2change").attr("name");
 				jQuery.post(
 					"$pluginurl/x7mixcreate.php",
 					{'x7bloghome': '$x7bloghome', 'x7server': "$x7server", 'ks': "$ks", 'x7editortype': '2', 'eid': eid, 'x7name': name, 'x7kalpartnerid': "$x7kalpartnerid", 'user_login': "$user_login"},
@@ -669,7 +676,7 @@ if ($widget=="useruploads"){
 		
 			function x7VidDelete()
 			{
-				var delid = jQuery("a#x7adelchange").attr("title");
+				var delid = jQuery("#x7adelchange").attr("title");
 				if (confirm("Warning! This will affect all mixes that include entry ID: " + delid + ". Continue?"))
 				{ 
 				    jQuery.post(
@@ -694,12 +701,12 @@ if ($widget=="useruploads"){
 					var thumburl = '$x7server/p/1/sp/10000/thumbnail/entry_id/'+eid+'/width/150/height/120';
 					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="330" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" data="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" /><a href="http://corp.kaltura.com">video platform</a> <a href="http://corp.kaltura.com/technology/video_management">video management</a> <a href="http://corp.kaltura.com/solutions/overview">video solutions</a> <a href="http://corp.kaltura.com/technology/video_player">video player</a> <a rel="media:thumbnail" href="$x7server/p/$x7kalpartnerid/sp/$x7kalsubpartnerid/thumbnail/entry_id/'+eid+'/width/120/height/90/bgcolor/000000/type/2" /> <span property="dc:description" content="" /><span property="media:title" content="x7Video" /> <span property="media:width" content="400" /><span property="media:height" content="330" /> <span property="media:type" content="application/x-shockwave-flash" /><span property="media:duration" content="{DURATION}" /> </object>';
 					
-					jQuery('a#x7aplaychange').attr("title",eid);
-					jQuery('a#x7aeditchange').attr("title",eid);
-					jQuery('a#x7aedit2change').attr("title",eid);
-					jQuery('a#x7aeditchange').attr("name",name);
-					jQuery('a#x7aedit2change').attr("name",name);
-					jQuery('a#x7adelchange').attr("title",eid);
+					jQuery('#x7aplaychange').attr("title",eid);
+					jQuery('#x7aeditchange').attr("title",eid);
+					jQuery('#x7aedit2change').attr("title",eid);
+					jQuery('#x7aeditchange').attr("name",name);
+					jQuery('#x7aedit2change').attr("name",name);
+					jQuery('#x7adelchange').attr("title",eid);
 					jQuery('textarea#x7embedchange').val(embedcode);
 					jQuery(':input#x7hiddeneidchange').val(eid);
 					jQuery('img#x7imgchange').attr("src",thumburl);
@@ -709,7 +716,8 @@ if ($widget=="useruploads"){
 					jQuery('div#x7form').show('slow');
 					var allowpost = '$x7allowposts';
 					if (allowpost=='yes'){
-						jQuery('div#x7postform').show('slow');
+						//jQuery('div#x7postform').show('slow');
+						jQuery( "#x7form" ).tabs("option","disabled",[]);
 					}
 					postout = 'true';
 				} else if(postout == 'true')
@@ -772,6 +780,26 @@ if ($widget=="useruploads"){
 				x7VidPost(eid, name);
 			});
 			
+			//set up the tabs with the post tab disabled by fault and enabled with a check for x7allowposts
+			jQuery( "#x7form" ).tabs({ disabled: [1] });
+			
+			//set up all of the buttons with icons
+			jQuery( "button#x7aplaychange" ).button({
+				icons: { primary: "ui-icon-play" }
+				});
+			jQuery( "button#x7aeditchange" ).button({
+				icons: { primary: "ui-icon-scissors" }
+				});
+			jQuery( "button#x7aedit2change" ).button({
+				icons: { primary: "ui-icon-scissors" }
+				});
+			jQuery( "button#x7adelchange" ).button({
+				icons: { primary: "ui-icon-trash" }
+				});
+			jQuery( "button.x7cancel" ).button({
+				icons: { primary: "ui-icon-cancel" }
+				});
+			
 			}); //end document ready
 DELETE_JS;
 
@@ -790,46 +818,56 @@ DELETE_JS;
 						
 			//ADD post form
 			$return .= <<<X7POSTFORM
-			<div class="ui-widget ui-state-highlight ui-corner-all" style="display:none" id="x7form">
-				<span style="float:right"><strong>Embed code:</strong><br><textarea id="x7embedchange" cols="25" rows="5"></textarea></span>
-				<a onClick="x7VidPlay()" id="x7aplaychange" title=""><strong>Media Entry Details<br><br>
-				<img id="x7imgchange" src=""><br><br>[PLAY]</a> |
+			<div class="ui-corner-all" style="display:none" id="x7form">
+				<ul>
+					<li><a href="#x7form-1">Media Admin</a></li>
+					<li><a href="#x7form-2">Submit for Post</a></li>
+					<li><a href="#x7form-3">Embed Code</a></li>
+				</ul>
+				<div id="x7form-1">
+				<img id="x7imgchange" src=""><br />
+				<button onClick="x7VidPlay()" id="x7aplaychange" title="">[PLAY]</button><br />
 X7POSTFORM;
 			if ($x7allowstandard == "yes") {
-				$return .= '<a id="x7aeditchange" name="" title="" onClick="x7VidEditStandard()">[CREATE STANDARD MIX]</a> |';
+				$return .= '<button id="x7aeditchange" name="" title="" onClick="x7VidEditStandard()">[CREATE STANDARD MIX]</button><br />';
 			}
 			if ($x7allowadvanced == "yes") {
-				$return .= '<a id="x7aedit2change" name="" title="" onClick="x7VidEditAdvanced()">[CREATE ADVANCED MIX]</a> |';
+				$return .= '<button id="x7aedit2change" name="" title="" onClick="x7VidEditAdvanced()">[CREATE ADVANCED MIX]</button><br />';
 			}
 			$return .= <<<X7POSTFORM2
-				<a id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</a> |
-				<a onClick="x7VidPost();">[CANCEL]</a>
-				<br><br>
-				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
-				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
-				<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
-				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
-				<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
-				<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
-				<input type="hidden" name="username" id="username" value="$user_login" >
-				<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
-				<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
-				<label for="title">Title of Post:</label><br />
-				<input type="text" size="25" name="title" id="title" value="" class="" ><br />
-				<label for="category">Category(ies):</label><br />
-				<select name="category[]" id="category" multiple="multiple" class="">
-				$option
-				</select><br />
-				<label for="description">Description:</label><br />
-				<textarea cols="35" rows="4" name="description" id="description" class="" />Another new video from $user_login!</textarea><br />
-				<label for="keywords">Tags (comma delimited):</label><br />
-				<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
-				<label for="password">Wordpress Password:</label><br />
-				<input type="password" name="password" id="password" size="20" ><br />
-				<input type="submit" value="[POST]" name="submit" id="submit" ></form>
-				</div>
-			</div>
+				<button id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</button><br />
+				<button class="x7cancel" onClick="x7VidPost();">[CANCEL]</button>
+				</div> <!-- end x7form-1 -->
+				<div id="x7form-2">
+					<div id="x7postform">
+					<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
+						<input type="hidden" name="x7server" id="x7server" value="$x7server" >
+						<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
+						<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
+						<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
+						<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
+						<input type="hidden" name="username" id="username" value="$user_login" >
+						<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
+						<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
+						<label for="title">Title of Post:</label><br />
+						<input type="text" size="25" name="title" id="title" value="" class="" ><br />
+						<label for="category">Category(ies):</label><br />
+						<select name="category[]" id="category" multiple="multiple" class="">
+							$option
+						</select><br />
+						<label for="description">Description:</label><br />
+						<textarea cols="35" rows="4" name="description" id="description" class="" />Another new video from $user_login!</textarea><br />
+						<label for="keywords">Tags (comma delimited):</label><br />
+						<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
+						<label for="password">Wordpress Password:</label><br />
+						<input type="password" name="password" id="password" size="20" ><br />
+						<input type="submit" value="[POST]" name="submit" id="submit" ></form>
+					</div> <!--end x7postform -->
+				</div> <!--end x7form-2 -->
+				<div id="x7form-3">
+					<strong>Embed code:</strong><br><textarea id="x7embedchange" cols="40" rows="10"></textarea>
+				</div> <!--end x7form-3 -->
+			</div> <!--end x7form -->
 X7POSTFORM2;
 
 			$return .= "<div id='x7tablewrap'><table id='x7entriestable'><thead><tr><th>Name</th><th>ID</th><th>Description</th><th>Duration</th><th>When Created</th></tr></thead><tbody>";
@@ -1928,19 +1966,19 @@ function x7_settings_page() {
 	<tr valign="top">
         <th scope="row">KalturaCE Default Video Player UIConfID (Single Video)</th>
         <td><input type="text" name="x7uiconfid" value="<?php echo get_option('x7uiconfid'); ?>" /></td>
-        <td><em>Example: 172876 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
+        <td><em>Example: 1727910 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
 		</tr>
 	
 	<tr valign="top">
         <th scope="row">KalturaCE Default Video Player UIConfID (Playlist)</th>
         <td><input type="text" name="x7pluiconfid" value="<?php echo get_option('x7pluiconfid'); ?>" /></td>
-        <td><em>Example: 172877 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
+        <td><em>Example: 1727911 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
 		</tr>
 	
 	<tr valign="top">
         <th scope="row">KalturaCE Default Video Player Admin UIConfID (Logged In Users)</th>
         <td><input type="text" name="x7adminuiconfid" value="<?php echo get_option('x7adminuiconfid'); ?>" /></td>
-        <td><em>Example: 172878 (this is the player that you configure with extra abilities, such as downloading and capturing thumbnails, displayed only to your logged in users - it can be the same as your regular single video player)</em></td>
+        <td><em>Example: 1727910 (this is the player that you configure with extra abilities, such as downloading and capturing thumbnails, displayed only to your logged in users - it can be the same as your regular single video player)</em></td>
 		</tr>
 		
 	<tr valign="top">
