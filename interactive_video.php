@@ -2,8 +2,8 @@
 /*
 Plugin Name: x7Host's Videox7 UGC Plugin
 Plugin URI: http://www.kalturacehost.com
-Description: This is not just another video embed tool - it includes every functionality you and your Wordpress users might need for video and rich-media, including playing, uploading and editing.  
-Version: 2.5.1
+Description: The only video plugin you will ever need. If this doesn't do it, you don't want it.
+Version: 2.5.2
 Author: rtcwp07
 Author URI: http://www.x7host.com
 */

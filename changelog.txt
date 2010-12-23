@@ -1,3 +1,10 @@
+Version 2.5.2
+-------------
+* Tons of bug fixes - including admin dash JS fix!  Please update!
+* Overall style improved
+* Style easily changeable via jQuery UI Themeroller
+* Coming in next version: Gallery shortcode!
+
 Version 2.5.1
 -------------
 * Tons of bug fixes

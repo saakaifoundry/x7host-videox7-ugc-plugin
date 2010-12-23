@@ -564,6 +564,102 @@ if (is_user_logged_in()){
 	$x7allowadvanced = get_option('x7allowadvanced');
 
 /***********************************************************************************************************************
+ * VIDEO GALLERY SHORTCODE *
+ * ********************************************************************************************************************/	
+if ($widget=="gallery"){
+	//Kaltura Contribution Wizard (Uploader)
+	//Start Kaltura "Admin" Session
+	$kmodel = KalturaModel::getInstance();
+	$ks = $kmodel->getAdminSession("","$user_login");
+	if (!$ks)
+		wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
+	
+	$filter = new KalturaMediaEntryFilter();
+	$filter->statusEqual = 2; //ready
+	$filter->mediaTypeEqual = 1; //video
+	//$filter->tagsLike = "demos";
+
+	$pager = new KalturaFilterPager();
+	$pager->pageSize = 50;
+	$pager->pageIndex = 1;
+	$list = $kmodel->listUserEntries($user_login, "50", "1"); // list all of the media items in the partner
+	
+	//player vars
+		$entryId = $list->objects[0]->id;
+		$player_width = 500;
+		$player_height = 310;
+		$autoPlay = "1";
+		$backgroundColor = "000000";
+	
+	$return .= <<<GALLERY
+	<!-- apply specific style for scrollable area -->
+	<style>
+		div.scrollableh { text-align:left;position:relative; overflow:hidden; width: 638px; height:100px; } 
+		div.scrollableh div.itemsh { width:20000em; position:absolute; }
+		div.scrollableh div.itemsh div { float:left; }  
+		div.scrollableh div.itemsh div.active { border:1px inset #ccc; background-color:#fff;	}
+		div.scrollableh div.itemsh div.img a:hover img{ border:1px inset #fff; background-color:#fff; }
+		div.scrollableh div.itemsh div.img a:link img{ border:1px inset #fff; background-color:#fff; }
+	</style>
+	<script type="text/javascript">
+	    if (swfobject.hasFlashPlayerVersion("9.0.0")) {
+	      var fn = function() {
+	        var att = { data:"$x7server/index.php/kwidget/wid/_$x7kalpartnerid/uiconf_id/$x7uiconfid", 
+						width:"$player_width", 
+						height:"$player_height",
+						id:"mykdp",
+						name:"mykdp" };
+	        var par = { flashvars:"&entryId=$entryId" +
+						"&autoPlay=$autoPlay",
+						allowScriptAccess:"always",
+						allowfullscreen:"true",
+						bgcolor:"$backgroundColor"
+					};
+	        var id = "mykdp";
+	        var myObject = swfobject.createSWF(att, par, id);
+	      };
+	      swfobject.addDomLoadEvent(fn);
+	    }
+    </script>
+	<div id="container" style="text-align:center;float:left;">
+		<div id="mykdp">KDP Should be loaded here...</div>
+		<div class="navi"></div> 
+		<a class="prev"></a>
+		<div class="scrollableh"> 
+			<div class="itemsh">
+			<div>
+GALLERY;
+				$itemcount = "0";
+				foreach ($list->objects as $mediaEntry) {
+					$itemcount++;
+					if ($itemcount == "6"){
+						$return .= "</div><div>";
+						$itemcount = "0";
+					}
+						$name     = $mediaEntry->name; // get the entry name
+						$id       = $mediaEntry->id;
+						$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
+						$description = $mediaEntry->description;
+					$return .= "<a title='$name' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
+				}
+	$return .= <<<GALLERY2
+			</div>
+			</div>
+		</div>
+		<a class="next"></a>
+	</div>
+	<script type="text/javascript">
+		function LoadMedia(entryId) {
+			jQuery('#mykdp').get(0).insertMedia("-1",entryId,'true');
+		}
+		jQuery(document).ready(function() {
+			jQuery("div.scrollableh").scrollable();
+		}); 
+	</script>
+GALLERY2;
+
+	} //end if widget is gallery
+/***********************************************************************************************************************
  * UPLOAD NEW MEDIA SHORTCODE *
  * ********************************************************************************************************************/	
 if ($widget=="kcw"){
@@ -770,6 +866,7 @@ if ($widget=="useruploads"){
 				"bProcessing": true,
 				"bSort": true,
 				"sScrollY": "300px",
+				"sScrollX": "100%",
 				"iDisplayLength": 10,
 				"sPaginationType": "full_numbers"
 			});
@@ -926,7 +1023,7 @@ ENTRY_DIV;
 		
 			function x7VidPlay()
 			{
-				var eid = jQuery("a#x7aplaychange").attr("title");
+				var eid = jQuery("button#x7aplaychange").attr("title");
 				var playurl = '$playurl'+'?eid='+eid+'&x7kalpartnerid=$x7kalpartnerid&x7server=$x7serverget&x7uiconfid=$x7adminuiconfid';
 				Shadowbox.open({
 					content: playurl,
@@ -938,9 +1035,9 @@ ENTRY_DIV;
 			
 			function x7VidEdit()
 			{
-				var eid = jQuery("a#x7aeditchange").attr("title");
-				var name = jQuery("a#x7aeditchange").attr("name");
-				var type = jQuery("a#x7aeditchange").attr("type");
+				var eid = jQuery("button#x7aeditchange").attr("title");
+				var name = jQuery("button#x7aeditchange").attr("name");
+				var type = jQuery("button#x7aeditchange").attr("edtype");
 				jQuery('div#x7form').hide('slow');
 				jQuery('div#x7tablewrap').show('slow');
 				if (type == "1"){
@@ -959,7 +1056,7 @@ ENTRY_DIV;
 		
 			function x7VidDelete()
 			{
-				var delid = jQuery("a#x7adelchange").attr("title");
+				var delid = jQuery("button#x7adelchange").attr("title");
 				if (confirm("Warning!  This will affect all playlists that contain mix id: " + delid + ". Continue?"))
 				{ 
 				    jQuery.post(
@@ -985,11 +1082,11 @@ ENTRY_DIV;
 					var thumburl = '$x7server/p/1/sp/10000/thumbnail/entry_id/'+eid+'/width/150/height/120';
 					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="330" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" data="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1283996450/wid/_100/uiconf_id/$x7uiconfid/entry_id/'+eid+'" /><a href="http://corp.kaltura.com">video platform</a> <a href="http://corp.kaltura.com/technology/video_management">video management</a> <a href="http://corp.kaltura.com/solutions/overview">video solutions</a> <a href="http://corp.kaltura.com/technology/video_player">video player</a> <a rel="media:thumbnail" href="$x7server/p/$x7kalpartnerid/sp/$x7kalsubpartnerid/thumbnail/entry_id/'+eid+'/width/120/height/90/bgcolor/000000/type/2" /> <span property="dc:description" content="" /><span property="media:title" content="x7Video" /> <span property="media:width" content="400" /><span property="media:height" content="330" /> <span property="media:type" content="application/x-shockwave-flash" /><span property="media:duration" content="{DURATION}" /> </object>';
 					
-					jQuery('a#x7aplaychange').attr("title",eid);
-					jQuery('a#x7aeditchange').attr("title",eid);
-					jQuery('a#x7aeditchange').attr("name",name);
-					jQuery('a#x7aeditchange').attr("type",type);
-					jQuery('a#x7adelchange').attr("title",eid);
+					jQuery('button#x7aplaychange').attr("title",eid);
+					jQuery('button#x7aeditchange').attr("title",eid);
+					jQuery('button#x7aeditchange').attr("name",name);
+					jQuery('button#x7aeditchange').attr("edtype",type);
+					jQuery('button#x7adelchange').attr("title",eid);
 					jQuery('textarea#x7embedchange').val(embedcode);
 					jQuery(':input#x7hiddeneidchange').val(eid);
 					jQuery('img#x7imgchange').attr("src",thumburl);
@@ -999,7 +1096,8 @@ ENTRY_DIV;
 					jQuery('div#x7form').show('slow');
 					var allowpost = '$x7allowposts';
 					if (allowpost=='yes'){
-						jQuery('div#x7postform').show('slow');
+						//jQuery('div#x7postform').show('slow');
+						jQuery( "#x7form" ).tabs("option","disabled",[]);
 					}
 					postout = 'true';
 				} else if(postout == 'true')
@@ -1052,6 +1150,7 @@ ENTRY_DIV;
 				"bProcessing": true,
 				"bSort": true,
 				"sScrollY": "300px",
+				"sScrollX": "100%",
 				"iDisplayLength": 10,
 				"sPaginationType": "full_numbers"
 			});
@@ -1059,9 +1158,26 @@ ENTRY_DIV;
 			jQuery("#x7entriestable tbody tr").live('click', function() {
 				var eid = jQuery(this).attr("title");
 				var name = jQuery(this).attr("name");
-				var type = jQuery(this).attr("type");
+				var type = jQuery(this).attr("edtype");
 				x7VidPost(eid, name, type);
 			});
+			
+			//set up the tabs with the post tab disabled by fault and enabled with a check for x7allowposts
+			jQuery( "#x7form" ).tabs({ disabled: [1] });
+			
+			//set up all of the buttons with icons
+			jQuery( "button#x7aplaychange" ).button({
+				icons: { primary: "ui-icon-play" }
+				});
+			jQuery( "button#x7aeditchange" ).button({
+				icons: { primary: "ui-icon-scissors" }
+				});
+			jQuery( "button#x7adelchange" ).button({
+				icons: { primary: "ui-icon-trash" }
+				});
+			jQuery( "button.x7cancel" ).button({
+				icons: { primary: "ui-icon-cancel" }
+				});
 			
 			}); //end document ready
 DELETE_JS;
@@ -1081,38 +1197,49 @@ DELETE_JS;
 						
 			//ADD post form
 			$return .= <<<X7POSTFORM
-			<div class="ui-widget ui-state-highlight ui-corner-all" style="display:none" id="x7form">
-				<span style="float:right"><strong>Embed code:</strong><br><textarea id="x7embedchange" cols="25" rows="5"></textarea></span>
-				<a onClick="x7VidPlay()" id="x7aplaychange" title=""><strong>Mix Details<br><br>
-				<img id="x7imgchange" src=""><br><br>[PLAY]</a> |
-				<a id="x7aeditchange" name="" title="" onClick="x7VidEdit()">[EDIT MIX]</a> |
-				<a id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</a> |
-				<a onClick="x7VidPost();">[CANCEL]</a>
-				<br><br>
-				<div id="x7postform" style="display:none">
-				<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
-				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
-				<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
-				<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
-				<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
-				<input type="hidden" name="username" id="username" value="$user_login" >
-				<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
-				<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
-				<label for="title">Title of Post:</label><br />
-				<input type="text" size="25" name="title" id="title" value="" class="" ><br />
-				<label for="category">Category(ies):</label><br />
-				<select name="category[]" id="category" multiple="multiple" class="">
-				$option
-				</select><br />
-				<label for="description">Description:</label><br />
-				<textarea cols="35" rows="4" name="description" id="description" class="" />Another new mix from $user_login!</textarea><br />
-				<label for="keywords">Tags (comma delimited):</label><br />
-				<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
-				<label for="password">Wordpress Password:</label><br />
-				<input type="password" name="password" id="password" size="20" ><br />
-				<input type="submit" value="[POST]" name="submit" id="submit" ></form>
-				</div>
-			</div>
+			<div class="ui-corner-all" style="display:none" id="x7form">
+				<ul>
+					<li><a href="#x7form-1">Mix Admin</a></li>
+					<li><a href="#x7form-2">Submit for Post</a></li>
+					<li><a href="#x7form-3">Embed Code</a></li>
+				</ul>
+				<div id="x7form-1">
+				<img id="x7imgchange" src=""><br />
+				<button onClick="x7VidPlay()" id="x7aplaychange" title="">[PLAY]</button><br />
+				<button id="x7aeditchange" name="" title="" onClick="x7VidEdit()">[EDIT]</button><br />
+				<button id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</button><br />
+				<button class="x7cancel" onClick="x7VidPost();">[CANCEL]</button>
+				</div> <!-- end x7form-1 -->
+				<div id="x7form-2">
+					<div id="x7postform">
+					<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7post.php" method="post">
+						<input type="hidden" name="x7server" id="x7server" value="$x7server" >
+						<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
+						<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
+						<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
+						<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
+						<input type="hidden" name="username" id="username" value="$user_login" >
+						<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
+						<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
+						<label for="title">Title of Post:</label><br />
+						<input type="text" size="25" name="title" id="title" value="" class="" ><br />
+						<label for="category">Category(ies):</label><br />
+						<select name="category[]" id="category" multiple="multiple" class="">
+							$option
+						</select><br />
+						<label for="description">Description:</label><br />
+						<textarea cols="35" rows="4" name="description" id="description" class="" />Another new mix from $user_login!</textarea><br />
+						<label for="keywords">Tags (comma delimited):</label><br />
+						<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
+						<label for="password">Wordpress Password:</label><br />
+						<input type="password" name="password" id="password" size="20" ><br />
+						<input type="submit" value="[POST]" name="submit" id="submit" ></form>
+					</div> <!--end x7postform -->
+				</div> <!--end x7form-2 -->
+				<div id="x7form-3">
+					<strong>Embed code:</strong><br><textarea id="x7embedchange" cols="40" rows="10"></textarea>
+				</div> <!--end x7form-3 -->
+			</div> <!--end x7form -->
 X7POSTFORM;
 
 			$return .= "<div id='x7tablewrap'><table id='x7entriestable'><thead><tr><th>Name</th><th>ID</th><th>Description</th><th>Duration (s)</th><th>Editor Type</th><th>When Created</th></tr></thead><tbody>";
@@ -1136,8 +1263,8 @@ X7POSTFORM;
                         //only add if the current user is the uploader
 			//if ($userId == $user_login) {
 				$return .= <<<ENTRY_DIV
-				<tr title="$eid" name="$name" type="$editortype">
-					<td class="tt" title="Click me to open administration menu!">$name</td>
+				<tr title="$eid" name="$name" edtype="$editortype">
+					<td class="tt" title="Click to open administration menu!">$name</td>
 					<td>$eid</td>
 					<td>$description</td>
 					<td>$duration</td>
@@ -1158,10 +1285,6 @@ if ($widget=="userposts"){
 		global $wpdb;
 		//explain that this will only show draft posts
 		$return .= <<<WARNING
-		
-		<style type="text/css">
-		.x7drafts { width:680px; }
-		</style>
 		<div class="ui-widget">
       <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
 	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> 
@@ -1187,7 +1310,7 @@ WARNING;
 				$tags = get_the_tags($postid);
 				$cats = get_the_category($postid);
 				$date = get_the_date();
-				$return .= "<div class='ui-widget ui-state-highlight ui-corner-all' style='padding:10px;'><p>";
+				$return .= "<div class='ui-corner-all' style='padding:10px;'><p>";
 				$return .= "Post Title: " . $title . "<br>";
 				$return .= "Date Submitted: " . $date . "<br>";
 				$return .= "Status: Awaiting Moderation<br>";
@@ -1226,7 +1349,7 @@ DRAFTS;
 				$tags = get_the_tags($postid);
 				$cats = get_the_category($postid);
 				$date = get_the_date();
-				$return .= "<div class='ui-widget ui-state-highlight ui-corner-all' style='padding:10px;'><p>";
+				$return .= "<div class='ui-corner-all' style='padding:10px;'><p>";
 				$return .= "Post Title: " . $title . "<br>";
 				$return .= "Date Submitted: " . $date . "<br>";
 				$return .= "Status: Awaiting Moderation<br>";
@@ -1322,7 +1445,7 @@ if ($widget=="makeplaylist"){
 		
 		</script>
 		<div class="ui-widget">
-      <div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+      <div class="ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
 	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
 	    <strong>Quick tip:  </strong>This page lets you make playlists only from videos and mixes that you yourself have uploaded and made.</p>
       </div>
@@ -1457,48 +1580,82 @@ if ($widget=="userplaylists"){
 			
 		jQuery(document).ready(function() {
 			addSuccessDiv();
-			//jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
-			
-			//make playlist entries sortable
-			jQuery("#sortable").sortable({
-				placeholder: 'ui-state-highlight'
-			});
-			jQuery("#sortable").disableSelection();
-			
-			//make playlists scrollable
-			jQuery(".scrollable").scrollable({
-				    vertical:true
-			      });
-			
-			jQuery(".item").mouseover(function(){
-				jQuery(this).addClass("ui-state-default");  
-			}).mouseout(function(){
-				jQuery(this).removeClass("ui-state-default");  
+
+			jQuery("td.tt[title]").tooltip();
+				
+			x7table = jQuery("#x7entriestable").dataTable({
+				"bJQueryUI": true,
+				"bPaginate": true,
+				"bProcessing": true,
+				"bSort": true,
+				"sScrollY": "300px",
+				"sScrollX": "100%",
+				"iDisplayLength": 10,
+				"sPaginationType": "full_numbers"
 			});
 			
-			jQuery("#droppable").droppable({
-				activeClass: 'ui-state-hover',
-				hoverClass: 'ui-state-active',
-				drop: function(event, ui) {
-					var eid = ui.draggable.attr("eid");
-					jQuery("#sortable li[eid="+ eid +"]").hide('slow');
-					jQuery("#sortable li[eid="+ eid +"]").remove();
-				}
+			jQuery("#x7entriestable tbody tr").live('click', function() {
+				var eid = jQuery(this).attr("title");
+				var name = jQuery(this).attr("name");
+				var type = jQuery(this).attr("edtype");
+				x7ListPost(eid, name);
 			});
+			
+			//set up the tabs with the post tab disabled by fault and enabled with a check for x7allowposts
+			jQuery( "#x7form" ).tabs({ disabled: [1] });
+			
+			//set up all of the buttons with icons
+			jQuery( "button#x7aplaychange" ).button({
+				icons: { primary: "ui-icon-play" }
+				});
+			jQuery( "button#x7aeditchange" ).button({
+				icons: { primary: "ui-icon-scissors" }
+				});
+			jQuery( "button#x7adelchange" ).button({
+				icons: { primary: "ui-icon-trash" }
+				});
+			jQuery( "button.x7cancel" ).button({
+				icons: { primary: "ui-icon-cancel" }
+				});
+				
 			}); //end document ready
-		function x7ListPost(eid)
+			var postout = 'false';
+		function x7ListPost(eid, name)
 		{
-				formValidate();
-				jQuery(':input#x7hiddeneidchange').val(eid);
-				jQuery('#x7listwrap').hide('slow');
-				jQuery("#x7form").show('slow');
-				postout='true';
+			if (postout == 'false'){
+					formValidate();
+					var thumburl = '$pluginurl/images/playlist.png';
+					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="680" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" data="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="playlistAPI.autoInsert=true&playlistAPI.kpl0Name='+eid+'&playlistAPI.kpl0Url=$x7serverget%2Findex.php%2Fpartnerservices2%2Fexecuteplaylist%3Fuid%3D%26partner_id%3D$x7kalpartnerid%26subp_id%3D$x7kalsubpartnerid%26format%3D8%26ks%3D%7Bks%7D%26playlist_id%3D'+eid+'&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" /></object>';
+					
+					jQuery('button#x7aplaychange').attr("title",eid);
+					jQuery('button#x7aeditchange').attr("title",eid);
+					jQuery('button#x7aeditchange').attr("name",name);
+					jQuery('button#x7adelchange').attr("title",eid);
+					jQuery('textarea#x7embedchange').val(embedcode);
+					jQuery(':input#x7hiddeneidchange').val(eid);
+					jQuery('img#x7imgchange').attr("src",thumburl);
+					
+					Shadowbox.init();
+					jQuery('div#x7tablewrap').hide('slow');
+					jQuery('div#x7form').show('slow');
+					var allowpost = '$x7allowposts';
+					if (allowpost=='yes'){
+						//jQuery('div#x7postform').show('slow');
+						jQuery( "#x7form" ).tabs("option","disabled",[]);
+					}
+					postout = 'true';
+				} else if(postout == 'true')
+				{
+					jQuery('div#x7form').hide('slow');
+					jQuery('div#x7tablewrap').show('slow');
+					postout = 'false';
+				}
 		}
 		
 		function x7FormClose()
 		{
 			jQuery("#x7form").hide('slow');
-			jQuery('#x7listwrap').show('slow');
+			jQuery('#x7tablewrap').show('slow');
 		}
 	  
 		function x7VidDelete(delid)
@@ -1515,13 +1672,13 @@ if ($widget=="userplaylists"){
 				} //end confirm
 			} //end x7VidDelete
 			
-			function x7VidPlay(theEntry)
+			function x7VidPlay()
 			{
-				x7EditClose();
+				var eid = jQuery("button#x7aplaychange").attr("title");
 				var theUrl;
 				theUrl = "$pluginurl/x7listplayer.php";
 			    Shadowbox.open({
-			    content:    theUrl + "?listid=" + theEntry + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
+			    content:    theUrl + "?listid=" + eid + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
 			    player:     "iframe",
 			    height:     330,
 			    width:      740
@@ -1530,6 +1687,8 @@ if ($widget=="userplaylists"){
 			
 			function x7VidEdit(eid, name)
 			{
+				var eid = jQuery("button#x7aeditchange").attr("title");
+				var name = jQuery("button#x7aeditchange").attr("name");
 				var theUrl = "$pluginurl/x7pledit.php";
 				Shadowbox.open({
 					content: theUrl + "?ks=$ksget&x7bloghomeget=$x7bloghomeget&x7server=$x7serverget&x7kalpartnerid=$x7kalpartnerid&pluginurl=$pluginurlget&eid="+eid+"&listname="+name,
@@ -1538,83 +1697,89 @@ if ($widget=="userplaylists"){
 					width: 400
 				});
 			}//end x7videdit
-		
-		function x7EditClose()
-		{
-			jQuery("#x7wrapdiv").hide('slow');
-			jQuery('#x7listwrap').show('slow');
-		}
 			</script>
-			
-			<div class="ui-widget ui-state-highlight ui-corner-all ui-helper-clearfix" style="display:none;width:auto;height:auto;" id="x7form">
-				<div id="x7postform">
-				<form name="x7postlist" id="x7postlist" action="$pluginurl/x7plpost.php" method="post">
-				<input type="hidden" name="x7server" id="x7server" value="$x7server" >
-				<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
-				<input type="hidden" name="x7pluiconfid" id="x7pluiconfid" value="$x7pluiconfid" >
-				<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
-				<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
-				<input type="hidden" name="username" id="username" value="$user_login" >
-				<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
-				<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
-				<label for="title">Title of Post:</label><br />
-				<input type="text" size="25" name="title" id="title" value="" class="" ><br />
-				<label for="category">Category(ies):</label><br />
-				<select name="category[]" id="category" multiple="multiple" class="">
-				$option
-				</select><br />
-				<label for="description">Description:</label><br />
-				<textarea cols="35" rows="4" name="description" id="description" class="" />Another new playlist from $user_login!</textarea><br />
-				<label for="keywords">Tags (comma delimited):</label><br />
-				<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
-				<label for="password">Wordpress Password:</label><br />
-				<input type="password" name="password" id="password" size="20" ><br />
-				<input type="submit" value="[Post]" name="submit" id="submit" ></form>
-				<a onClick="x7FormClose();">[Cancel]</a>
-				</div>
-			</div>
-			
-			<div id="x7loading"></div><br><br>
-			
-<div id="x7listwrap">
-<div id="actions">
-	<a class="prev">&laquo; Previous</a>
-	<a class="next">More playlists &raquo;</a>
-</div>
-<div class="scrollable vertical">
-<div class="items">
 USERPLJS;
-$plresult = rest_helper("$x7server/api_v3/?service=playlist&action=list",
+
+		//ADD X7LOADING DIV
+		$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
+		
+		//Embed user uploads
+		$xmlresult = rest_helper("$x7server/api_v3/?service=playlist&action=list",
 					 array(
 						'ks' => $ks,
 						'filter:userIdEqual' => $user_login,
 						'filter:orderBy' => '-createdAt'
 					 ), 'POST'
 					 );
-		foreach ($plresult->result->objects->item as $plentry) {
+						
+			//ADD post form
+			$return .= <<<X7POSTFORM
+			<div class="ui-corner-all" style="display:none" id="x7form">
+				<ul>
+					<li><a href="#x7form-1">Playlist Admin</a></li>
+					<li><a href="#x7form-2">Submit for Post</a></li>
+					<li><a href="#x7form-3">Embed Code</a></li>
+				</ul>
+				<div id="x7form-1">
+				<img id="x7imgchange" src=""><br />
+				<button onClick="x7VidPlay()" id="x7aplaychange" title="">[PLAY]</button><br />
+				<button id="x7aeditchange" name="" title="" onClick="x7VidEdit()">[EDIT]</button><br />
+				<button id="x7adelchange" title="" onClick="x7VidDelete()">[DELETE]</button><br />
+				<button class="x7cancel" onClick="x7FormClose();">[CANCEL]</button>
+				</div> <!-- end x7form-1 -->
+				<div id="x7form-2">
+					<div id="x7postform">
+					<form name="x7postdraft" id="x7postdraft" action="$pluginurl/x7plpost.php" method="post">
+						<input type="hidden" name="x7server" id="x7server" value="$x7server" >
+						<input type="hidden" name="x7kalpartnerid" id="x7kalpartnerid" value="$x7kalpartnerid" >
+						<input type="hidden" name="x7uiconfid" id="x7uiconfid" value="$x7uiconfid" >
+						<input type="hidden" name="eid" id="x7hiddeneidchange" value="" >
+						<input type="hidden" name="rpcurl" id="rpcurl" value="$x7rpcurl" >
+						<input type="hidden" name="username" id="username" value="$user_login" >
+						<input type="hidden" name="x7fullplugurl" id="x7fullplugurl" value="$x7fullplugurl" >
+						<input type="hidden" name="x7bloghome" id="x7bloghome" value="$x7bloghome" >
+						<label for="title">Title of Post:</label><br />
+						<input type="text" size="25" name="title" id="title" value="" class="" ><br />
+						<label for="category">Category(ies):</label><br />
+						<select name="category[]" id="category" multiple="multiple" class="">
+							$option
+						</select><br />
+						<label for="description">Description:</label><br />
+						<textarea cols="35" rows="4" name="description" id="description" class="" />Another new playlist from $user_login!</textarea><br />
+						<label for="keywords">Tags (comma delimited):</label><br />
+						<input type="text" size="25" name="keywords" id="keywords" value="" class="" ><br />
+						<label for="password">Wordpress Password:</label><br />
+						<input type="password" name="password" id="password" size="20" ><br />
+						<input type="submit" value="[POST]" name="submit" id="submit" ></form>
+					</div> <!--end x7postform -->
+				</div> <!--end x7form-2 -->
+				<div id="x7form-3">
+					<strong>Embed code:</strong><br><textarea id="x7embedchange" cols="40" rows="10"></textarea>
+				</div> <!--end x7form-3 -->
+			</div> <!--end x7form -->
+X7POSTFORM;
+
+$return .= "<div id='x7tablewrap'><table id='x7entriestable'><thead><tr><th>Name</th><th>ID</th><th>Description</th><th>When Created</th></tr></thead><tbody>";
+			
+		foreach ($xmlresult->result->objects->item as $plentry) {
 			$eid = $plentry->id;
 			$thumb = $plentry->thumbnailUrl;
 			$userId = $plentry->userId;
 			$name = $plentry->name;
 			$description = $plentry->description;
-			$duration = $plentry ->duration;
-			$return .= <<<ENTRY_DIV3
-				<div class="item ui-widget-content ui-corner-all" id="$eid">
-				<strong>Name</strong>: $name<br>
-				<img alt="$eid" class="tt" src="$pluginurl/images/playlist.png" height="90" width="90">
-				<a onClick="x7VidPlay('$eid')">[PLAY]</a> |
-				<a onClick="x7VidEdit('$eid', '$name')">[EDIT]</a> |
-				<a onClick="x7VidDelete('$eid')">[DELETE]</a> |
-				<a onClick="x7ListPost('$eid')">[POST]</a>
-				<span style="margin-left:20px;float:right;">
-				<strong>Embed code:</strong><br>
-				<textarea cols="20" rows="2"><object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="620" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1284005068/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" data="$x7server/index.php/kwidget/cache_st/1284005068/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="playlistAPI.autoContinue=true&playlistAPI.autoInsert=true&playlistAPI.kpl0Name=test&playlistAPI.kpl0Url=$x7serverget%2Findex.php%2Fpartnerservices2%2Fexecuteplaylist%3Fuid%3D%26partner_id%3D$x7kalpartnerid%26subp_id%3D$x7kalsubpartnerid%26format%3D8%26ks%3D%7Bks%7D%26playlist_id%3D$eid&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1284005068/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" /><a href="http://corp.kaltura.com">video platform</a> <a href="http://corp.kaltura.com/technology/video_management">video management</a> <a href="http://corp.kaltura.com/solutions/overview">video solutions</a> <a href="http://corp.kaltura.com/technology/video_player">video player</a> {SEO} </object></textarea>
-				</span>
-				</div>
-ENTRY_DIV3;
-
+			$createdat = (string) $plentry->createdAt;
+			$createdat = date(DATE_RSS, $createdat);
+				$return .= <<<ENTRY_DIV
+				<tr title="$eid" name="$name">
+					<td class="tt" title="Click to open administration menu">$name</td>
+					<td>$eid</td>
+					<td>$description</td>
+					<td>$createdat</td>
+				</tr>
+ENTRY_DIV;
 		} //end foreach
-		$return .= "</div></div></div>";
+		//End x7entries table
+		$return .= "</tbody></table></div>";
 	
 	}//end if widget is user playlists
 	

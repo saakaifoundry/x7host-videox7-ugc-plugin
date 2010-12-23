@@ -4,13 +4,15 @@ Donate link: http://www.kalturecehost.com/
 Tags: plugin, admin, images, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
 Tested up to: 3.0.3
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 
-Easily add full video capabilities to your blog.
+You, your logged in Wordpress users, and your blog visitors get cutting edge online video capabilities.  Webcam comments, collaborative editing, and more!
 
 == Description ==
 
 This plugin is a fork of Kaltura's original "All In One Video Pack" plugin, enhanced in many ways and designed from the bottom up to be easily integrated with the self-hosted Kaltura Community Edition.
+
+To use this plugin, you need either: 1) A Kaltura Community Edition self-hosted server (get one today from x7Host, www.x7host.com), or 2) An account with Kaltura.com (free trial for up to 10 GB of video)
 
 This is not just another video embed tool - it includes every functionality you might need for video and rich-media, including the ability to upload/ record/import videos directly to your post, edit and remix content with both a standard and advanced video editor, enable video and webcam comments, manage and track your video content, create and edit playlists and much more.
 
@@ -34,20 +36,14 @@ Highlights:
 * Easy installation that takes just 4 steps and a few minutes. 
 
 
-Version 2.5.1
+Version 2.5.2
 -------------
 * Tons of bug fixes - everyone should update
+* Overall style improved
+* Style easily changeable via jQuery UI Themeroller
+* Coming in next version: Gallery shortcode!
 
 Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://www.kalturacehost.com
-
-
-Kaltura Hosted Solution - Free Trial and Affordable Packages
--------------
-You still have the option to hook this plugin up to the Kaltura.com SaaS if you like.  Or you can get your own KalturaCE cloud video server from x7Host...
-
-Self-Hosted Solution
--------------
-With a cloud video server from x7Host (www.x7host.com), you can get your own enterprise class online video platform on your own server in the clouds, that grows and shrinks as you need it to.  Whether you have a small personal video blog or hundreds of thousands of video viewers a month, x7Host can give you the cloud video server you need.  This plugin is easily integrated with the x7Host cloud servers.
 
 == Installation ==
 
