@@ -24,88 +24,18 @@ textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; paddi
 			html>body #trash li { height: 91px; line-height: 1.2em; }
 			.ui-state-highlight { height: 1.5em; line-height: 1.2em; }
 			textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }	    
-/* root element for scrollable */
-.vertical {  
-	
-	/* required settings */
-	position:relative;
-	overflow:hidden;	
 
-	/* vertical scrollers have typically larger height than width */	
-	height: 270px;	 
-	width: 550px;
-	border-top:1px solid #ddd;	
-}
-
-/* root element for scrollable items */
-.items {	
-	position:absolute;
-	
-	/* this time we have very large space for height */	
-	height:20000em;	
-	margin: 0px;
-}
-
-/* single scrollable item */
-.item {
-	border-bottom:1px solid #ddd;
-	margin:10px 0;
-	padding:15px;
-	font-size:12px;
-	height:100px;
-}
-
-/* elements inside single item */
-.item img {
-	float:left;
-	margin-right:20px;
-	height:90px;
-	width:110px;
-}
-
-.item h3 {
-	margin:0 0 5px 0;
-	font-size:16px;
-	color:#456;
-	font-weight:normal;
-}
-
-/* the action buttons above the scrollable */
-#actions {
-	width:500px;
-	margin:30px 0 10px 0;	
-}
-
-#actions a {
-	font-size:11px;		
-	cursor:pointer;
-	color:#666;
-}
-
-#actions a:hover {
-	text-decoration:underline;
-	color:#000;
-}
-
-.disabled {
-	visibility:hidden;		
-}
-
-.next {
-	float:right;
-}
-
-/*
-	root element for the scrollable horizontal
+			/*
+	root element for the scrollable.
 	when scrolling occurs this element stays still.
 */
-.scrollableh {
+.scrollable {
 
 	/* required settings */
 	position:relative;
 	overflow:hidden;
-	width: 680px;
-	height:120px;
+	width: 505px;
+	height:100px;
 
 	/* custom decorations */
 	border:1px solid #ccc;
@@ -118,20 +48,32 @@ textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; paddi
 	it's enough that you set the width and height for the root element and
 	not for this element.
 */
-.scrollableh .items {
+.scrollable .items {
 	/* this cannot be too large */
 	width:20000em;
 	position:absolute;
 	clear:both;
 }
 
-.itemsh div {
+.items div {
 	float:left;
 	width:680px;
 }
 
+/* remove margins from the image */
+	.items img {
+		margin:0;
+	}
+	
+	/* make A tags our floating scrollable items */
+	.items a {
+		display:block;
+		float:left;
+		margin:20px 15px;
+	} 
+
 /* single scrollable item */
-.scrollableh img {
+.scrollable img {
 	float:left;
 	margin:20px 5px 20px 21px;
 	background-color:#fff;
@@ -145,19 +87,19 @@ textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; paddi
 }
 
 /* active item */
-.scrollableh .active {
+.scrollable .active {
 	border:2px solid #000;
 	position:relative;
 	cursor:default;
 }
 
 /* this makes it possible to add next button beside scrollable */
-.scrollableh {
+.scrollable {
 	float:left;	
 }
 
 /* prev, next, prevPage and nextPage buttons */
-a.browseh {
+a.browse {
 	background:url(hori_large.png) no-repeat;
 	display:block;
 	width:30px;
@@ -175,7 +117,7 @@ a.right:active 	{ background-position:-60px -30px; }
 
 
 /* left */
-a.left				{ margin-left: 0px; } 
+a.left				{ margin-left: 0px; margin-top: 360px; } 
 a.left:hover  		{ background-position:-30px 0; }
 a.left:active  	{ background-position:-60px 0; }
 
@@ -199,4 +141,4 @@ a.down:active  	{ background-position:-60px -30px; }
 /* disabled navigational button */
 a.disabled {
 	visibility:hidden !important;		
-}
+} 	
