@@ -229,6 +229,21 @@ class KalturaHelpers
 		return @get_option("kaltura_enable_video_comments") == true ? true : false;
 	}
 	
+	function postsAllowed()
+	{
+		return @get_option("x7allowposts") == true ? true : false;
+	}
+	
+	function standardAllowed()
+	{
+		return @get_option("x7allowstandard") == true ? true : false;
+	}
+	
+	function advancedAllowed()
+	{
+		return @get_option("x7allowadvanced") == true ? true : false;
+	}
+	
 	function getThumbnailUrl($widgetId = null, $entryId = null, $width = 240, $height= 180, $version = 100000)
 	{
 		$config = KalturaHelpers::getKalturaConfiguration();
