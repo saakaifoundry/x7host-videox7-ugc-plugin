@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: All in One Video Pack Sidebar Widget
-Plugin URI: http://kaltura.org/
+Plugin Name: All in One Video Pack Sidebar Widget Videox7 Version
+Plugin URI: http://kalturacehost.com
 Description: A sidebar widget that allows you to display the most recent posted videos and comments in your blog.  
-Version: 2.4.2
-Author: Kaltura
-Author URI: http://kaltura.org/
+Version: 2.5.2
+Author: rtcwp07, Kaltura
+Author URI: http://www.x7host.com
 */
 
 require_once('settings.php');
@@ -24,7 +24,7 @@ class AllInOneVideoWidget
 		}
 		else
 		{
-			$msg = __("Please activate \"All in One Video Pack\" before using the sidebar widget");
+			$msg = __("Please activate \"x7Host Videox7 UGC Plugin\" before using the sidebar widget");
 			$notice = '<div class="updated fade"><p><strong>'.$msg.'</strong></p></div>';
 			add_action('admin_notices', create_function("", 'echo \''.$notice.'\';'));
 		}

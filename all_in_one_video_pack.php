@@ -177,6 +177,13 @@ function kaltura_activate()
 {
 	update_option("kaltura_default_player_type", "whiteblue");
 	update_option("kaltura_comments_player_type", "whiteblue");
+	update_option("x7uiconfid", "1727910");
+	update_option("x7pluiconfid", "1727911");
+	update_option("x7adminuiconfid", "1727910");
+	update_option("x7kcwuiconfid", "1727883");
+	update_option("x7allowposts", true);
+	update_option("x7allowstandard", true);
+	update_option("x7allowadvanced", true);
 
 	require_once("kaltura_db.php");
 	kaltura_install_db();
@@ -223,9 +230,8 @@ function kaltura_mce_version($content)
   
 function kaltura_add_admin_menu() 
 {
-	add_options_page('All in One Video', 'All in One Video', 8, 'interactive_video', 'kaltura_admin_page');
-	
-	$args = array('All in One Video', 'All in One Video', 8, 'interactive_video_library', 'kaltura_library_page');
+	add_options_page('x7 UGC Settings', 'x7 UGC Settings', 8, 'interactive_video', 'kaltura_admin_page');
+	$args = array('x7 UGC Video', 'x7 UGC Video', 8, 'interactive_video_library', 'kaltura_library_page');
 	// because of the change in wordpress 2.7 menu structure, we move the library page under "Media" tab
 	if (KalturaHelpers::compareWPVersion("2.7", ">=")) 
 		call_user_func_array("add_media_page", $args);
@@ -504,8 +510,8 @@ function rest_helper($url, $params = null, $verb = 'POST', $format = 'xml')
 }
 
 // create custom plugin settings menu
-add_action('admin_menu', 'x7_create_menu');
-
+//add_action('admin_menu', 'x7_create_menu');
+/* NOT NEEDED ANYMORE, INCLUDED IN ALL IN ONE SETTINGS PAGE
 function x7_create_menu() {
 
 	//create new top-level menu
@@ -525,7 +531,7 @@ function register_mysettings() {
 	register_setting( 'x7-settings-group', 'x7allowstandard' );
 	register_setting( 'x7-settings-group', 'x7allowadvanced' );
 }
-
+*/
 function x7video_shortcode($atts)
 {
    extract( shortcode_atts( array(
@@ -588,19 +594,9 @@ if ($widget=="gallery"){
 		$entryId = $list->objects[0]->id;
 		$player_width = 500;
 		$player_height = 310;
-		$autoPlay = "1";
 		$backgroundColor = "000000";
 	
 	$return .= <<<GALLERY
-	<!-- apply specific style for scrollable area -->
-	<style>
-		div.scrollableh { text-align:left;position:relative; overflow:hidden; width: 638px; height:100px; } 
-		div.scrollableh div.itemsh { width:20000em; position:absolute; }
-		div.scrollableh div.itemsh div { float:left; }  
-		div.scrollableh div.itemsh div.active { border:1px inset #ccc; background-color:#fff;	}
-		div.scrollableh div.itemsh div.img a:hover img{ border:1px inset #fff; background-color:#fff; }
-		div.scrollableh div.itemsh div.img a:link img{ border:1px inset #fff; background-color:#fff; }
-	</style>
 	<script type="text/javascript">
 	    if (swfobject.hasFlashPlayerVersion("9.0.0")) {
 	      var fn = function() {
@@ -610,7 +606,7 @@ if ($widget=="gallery"){
 						id:"mykdp",
 						name:"mykdp" };
 	        var par = { flashvars:"&entryId=$entryId" +
-						"&autoPlay=$autoPlay",
+						"&autoPlay=true",
 						allowScriptAccess:"always",
 						allowfullscreen:"true",
 						bgcolor:"$backgroundColor"
@@ -621,18 +617,18 @@ if ($widget=="gallery"){
 	      swfobject.addDomLoadEvent(fn);
 	    }
     </script>
-	<div id="container" style="text-align:center;float:left;">
+
 		<div id="mykdp">KDP Should be loaded here...</div>
-		<div class="navi"></div> 
-		<a class="prev"></a>
-		<div class="scrollableh"> 
-			<div class="itemsh">
+		<!-- "previous page" action -->
+		<a class="prev browse left"></a>
+		<div class="scrollable"> 
+			<div class="items">
 			<div>
 GALLERY;
 				$itemcount = "0";
 				foreach ($list->objects as $mediaEntry) {
 					$itemcount++;
-					if ($itemcount == "6"){
+					if ($itemcount == "5"){
 						$return .= "</div><div>";
 						$itemcount = "0";
 					}
@@ -640,20 +636,27 @@ GALLERY;
 						$id       = $mediaEntry->id;
 						$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
 						$description = $mediaEntry->description;
-					$return .= "<a title='$name' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
+					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Description</strong>: $description' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
 				}
 	$return .= <<<GALLERY2
 			</div>
 			</div>
 		</div>
-		<a class="next"></a>
-	</div>
+		<!-- "next page" action -->
+		<a class="next browse right"></a>
+		<div class="tooltip" id="tooltip"></div>
+		<br clear="all" />
+
 	<script type="text/javascript">
 		function LoadMedia(entryId) {
-			jQuery('#mykdp').get(0).insertMedia("-1",entryId,'true');
+			//jQuery('#mykdp').get(0).insertMedia("-1",entryId,'true');
+			jQuery('#mykdp').get(0).sendNotification("changeMedia",{entryId:entryId});
 		}
 		jQuery(document).ready(function() {
-			jQuery("div.scrollableh").scrollable();
+			jQuery("div.scrollable").scrollable().find("a").tooltip({
+				tip: '#tooltip',
+				position: 'bottom center'
+			});
 		}); 
 	</script>
 GALLERY2;
@@ -811,7 +814,7 @@ if ($widget=="useruploads"){
 					jQuery('div#x7tablewrap').hide('slow');
 					jQuery('div#x7form').show('slow');
 					var allowpost = '$x7allowposts';
-					if (allowpost=='yes'){
+					if (allowpost=='1'){
 						//jQuery('div#x7postform').show('slow');
 						jQuery( "#x7form" ).tabs("option","disabled",[]);
 					}
@@ -925,10 +928,10 @@ DELETE_JS;
 				<img id="x7imgchange" src=""><br />
 				<button onClick="x7VidPlay()" id="x7aplaychange" title="">[PLAY]</button><br />
 X7POSTFORM;
-			if ($x7allowstandard == "yes") {
+			if ($x7allowstandard) {
 				$return .= '<button id="x7aeditchange" name="" title="" onClick="x7VidEditStandard()">[CREATE STANDARD MIX]</button><br />';
 			}
-			if ($x7allowadvanced == "yes") {
+			if ($x7allowadvanced) {
 				$return .= '<button id="x7aedit2change" name="" title="" onClick="x7VidEditAdvanced()">[CREATE ADVANCED MIX]</button><br />';
 			}
 			$return .= <<<X7POSTFORM2
@@ -1095,7 +1098,7 @@ ENTRY_DIV;
 					jQuery('div#x7tablewrap').hide('slow');
 					jQuery('div#x7form').show('slow');
 					var allowpost = '$x7allowposts';
-					if (allowpost=='yes'){
+					if (allowpost=='1'){
 						//jQuery('div#x7postform').show('slow');
 						jQuery( "#x7form" ).tabs("option","disabled",[]);
 					}
@@ -1639,7 +1642,7 @@ if ($widget=="userplaylists"){
 					jQuery('div#x7tablewrap').hide('slow');
 					jQuery('div#x7form').show('slow');
 					var allowpost = '$x7allowposts';
-					if (allowpost=='yes'){
+					if (allowpost=='1'){
 						//jQuery('div#x7postform').show('slow');
 						jQuery( "#x7form" ).tabs("option","disabled",[]);
 					}
@@ -2112,70 +2115,9 @@ function _kdp3_upload_layout_flashvars($enabled) {
 if ( !get_option('kaltura_partner_id') && !isset($_POST['submit']) && !strpos($_SERVER["REQUEST_URI"], "page=interactive_video")) {
 	function kaltura_warning() {
 		echo "
-		<div class='updated fade'><p><strong>".__('To complete the All in One Video Pack installation, <a href="'.get_settings('siteurl').'/wp-admin/options-general.php?page=interactive_video">you must get a Partner ID.</a>')."</strong></p></div>
+		<div class='updated fade'><p><strong>".__('To complete the x7Host Videox7 UGC Plugin installation, <a href="'.get_settings('siteurl').'/wp-admin/options-general.php?page=interactive_video">you must set your Partner ID.</a>')."</strong></p></div>
 		";
 	}
 	add_action('admin_notices', 'kaltura_warning');
 }
-//SETTINGS PAGE!!!
-function x7_settings_page() {
 ?>
-<div class="wrap">
-<h2>x7Host UGC Video Plugin Settings</h2>
-
-<form method="post" action="options.php">
-    <?php settings_fields( 'x7-settings-group' ); ?>
-    <table class="form-table">
-	<strong>ALL options fields must be filled in for proper operation of the plugin.</strong>
-        
-	<tr valign="top">
-        <th scope="row">KalturaCE Default Video Player UIConfID (Single Video)</th>
-        <td><input type="text" name="x7uiconfid" value="<?php echo get_option('x7uiconfid'); ?>" /></td>
-        <td><em>Example: 1727910 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
-		</tr>
-	
-	<tr valign="top">
-        <th scope="row">KalturaCE Default Video Player UIConfID (Playlist)</th>
-        <td><input type="text" name="x7pluiconfid" value="<?php echo get_option('x7pluiconfid'); ?>" /></td>
-        <td><em>Example: 1727911 (find your UIConfID in the Application Studio of <a href="<?php echo get_option('x7server'); ?>/kmc" target="_new">your KMC</a>)</em></td>
-		</tr>
-	
-	<tr valign="top">
-        <th scope="row">KalturaCE Default Video Player Admin UIConfID (Logged In Users)</th>
-        <td><input type="text" name="x7adminuiconfid" value="<?php echo get_option('x7adminuiconfid'); ?>" /></td>
-        <td><em>Example: 1727910 (this is the player that you configure with extra abilities, such as downloading and capturing thumbnails, displayed only to your logged in users - it can be the same as your regular single video player)</em></td>
-		</tr>
-		
-	<tr valign="top">
-        <th scope="row">KalturaCE Default KCW UIConfID</th>
-        <td><input type="text" name="x7kcwuiconfid" value="<?php echo get_option('x7kcwuiconfid'); ?>" /></td>
-        <td><em>Example: 1727883 (Default KalturaCE KCW UIConfID is 1727883, change this to use custom UIConf)</em></td>
-		</tr>
-	
-	<tr valign="top">
-        <th scope="row">Allow User Posts?</th>
-        <td><input type="text" name="x7allowposts" value="<?php echo get_option('x7allowposts'); ?>" /></td>
-        <td><em>Example: MUST be either "yes" or "no" to allow or disallow user posting of entries, mixes and playlists.</em></td>
-		</tr>
-	
-	<tr valign="top">
-        <th scope="row">Allow Standard Editor?</th>
-        <td><input type="text" name="x7allowstandard" value="<?php echo get_option('x7allowstandard'); ?>" /></td>
-        <td><em>Example: MUST be either "yes" or "no" to allow or disallow use of the Standard Editor.</em></td>
-		</tr>
-	
-	<tr valign="top">
-        <th scope="row">Allow Advanced Editor?</th>
-        <td><input type="text" name="x7allowadvanced" value="<?php echo get_option('x7allowadvanced'); ?>" /></td>
-        <td><em>Example: MUST be either "yes" or "no" to allow or disallow use of the Advanced Editor.</em></td>
-		</tr>
-	
-    </table>
-    
-    <p class="submit">
-    <input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
-    </p>
-
-</form>
-</div>
-<?php } ?>
