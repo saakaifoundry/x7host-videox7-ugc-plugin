@@ -58,6 +58,13 @@
 				update_option("kaltura_permissions_edit", 0);
 				update_option("kaltura_enable_video_comments", true);
 				update_option("kaltura_allow_anonymous_comments", true);
+				update_option("x7uiconfid", "1727910");
+				update_option("x7pluiconfid", "1727911");
+				update_option("x7adminuiconfid", "1727910");
+				update_option("x7kcwuiconfid", "1727883");
+				update_option("x7allowposts", true);
+				update_option("x7allowstandard", true);
+				update_option("x7allowadvanced", true);
 				$viewData["success"] = true;
 			}
 		}
@@ -86,17 +93,17 @@
 
 <?php if (!$viewData["pingOk"]): ?>
 	<div class="wrap">
-		<h2><?php _e('All in One Video Pack Installation'); ?></h2>
+		<h2><?php _e('x7Host Videox7 UGC Plugin Installation'); ?></h2>
 		<br />
 		<div class="error">
 			<p>
-				<strong>Your connection has failed to reach the Kaltura servers. Please check if your web host blocks outgoing connections and then retry installation.</strong>
+				<strong>Your connection has either failed to reach the Kaltura.com servers or your KalturaCE Server. Please check your KALTURA_SERVER_URL and KALTURA_CDN_URL variable settings in the settings.php file.</strong>
 			</p>
 		</div>
 	</div>
 <?php elseif ($viewData["error"]): ?>
 	<div class="wrap">
-		<h2><?php _e('All in One Video Pack Installation'); ?></h2>
+		<h2><?php _e('x7Host Videox7 UGC Plugin Installation'); ?></h2>
 		<br />
 		<div class="error">
 			<p>
@@ -114,13 +121,13 @@
 		<br />
 		<div class="updated fade">
 			<p>
-				<strong>You have successfully installed the All in One Video Pack. </strong>
+				<strong>You have successfully installed the x7Host Videox7 UGC Plugin. </strong>
 			</p>
 		</div>
 		<p>
 			Next time you write a post, you will see a new icon in the Add Media toolbar that allows you to upload and edit Interactive Videos. <br />
 			<br />
-			Note that a Kaltura Partner ID has been created for you, and an email has been sent to the specified email address containing the ID information. The email you received also includes a link and a password to the Kaltura Management Console (KMC), where you can track and manage all information related to the All in One Video Pack.<br />
+			If you signed up for an account with Kaltura.com SaaS, check your email for account details.<br />
 		</p>
 		<br />
 		<div class="wrap">
@@ -129,12 +136,12 @@
 	</div>
 <?php else: ?>
 	<div class="wrap">
-	<h2><?php _e('All in One Video Pack Installation'); ?></h2>
+	<h2><?php _e('x7Host Videox7 UGC Plugin Installation'); ?></h2>
 	<p>
-		<a href="options-general.php?page=interactive_video&partner_login=true">Click here if you already have a Partner ID</a>
+		<a href="options-general.php?page=interactive_video&partner_login=true">Click here if you already have a Partner ID (either with Kaltura.com or your own KalturaCE Server)</a>
 	</p>
     <p>
-    	Once you complete the form below and click "Complete installation", the All in One Video Pack will be fully installed and ready to use. 
+    	Completing the form below and clicking "Complete Installation" will register a new publisher account either with Kaltura.com SaaS or on your own KalturaCE server, depending on your KALTURA_SERVER_URL and KALTURA_CDN_URL variable settings in this plugin's settings.php file. 
     </p>
 	<h3><?php _e("Get a Partner ID"); ?></h3>
 	<form name="form1" method="post" />

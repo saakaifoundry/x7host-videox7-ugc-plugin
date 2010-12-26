@@ -10,14 +10,26 @@
 		$allow_anonymous_comments = @$_POST["allow_anonymous_comments"] ? true : false;
 		$default_player_type = $_POST["default_player_type"];
 		$comments_player_type = $_POST["comments_player_type"];
-		 
+		$default_playlist_type = $_POST["default_playlist_type"];
+		$admin_player_type = $_POST["admin_player_type"];
+		$default_kcw_type = $_POST["default_kcw_type"];
+		$allow_posts = @$_POST["allow_posts"] ? true : false;
+		$allow_standard = @$_POST["allow_standard"] ? true : false;
+		$allow_advanced = @$_POST["allow_advanced"] ? true : false;
+		
 		update_option("kaltura_permissions_add", $permissions_add);
 		update_option("kaltura_permissions_edit", $permissions_edit);
 		update_option("kaltura_enable_video_comments", $enable_video_comments);
 		update_option("kaltura_allow_anonymous_comments", $allow_anonymous_comments);
 		update_option("kaltura_default_player_type", $default_player_type);
 		update_option("kaltura_comments_player_type", $comments_player_type);
-
+		update_option("x7uiconfid", $default_player_type);
+		update_option("x7pluiconfid", $default_playlist_type);
+		update_option("x7adminuiconfid", $admin_player_type);
+		update_option("x7kcwuiconfid", $default_kcw_type);
+		update_option("x7allowposts", $allow_posts);
+		update_option("x7allowstandard", $allow_standard);
+		update_option("x7allowadvanced", $allow_advanced);
 		
 		$viewData["showMessage"] = true;
 	}
@@ -52,7 +64,7 @@
 <?php if ($viewData["error"]): ?>
 
 <div class="wrap">
-	<h2><?php _e('All in One Video Pack Settings'); ?></h2>
+	<h2><?php _e('x7Host Videox7 UGC Plugin Settings'); ?></h2>
 	<br />
 	<div id="message" class="updated"><p><strong><?php _e('Failed to verify partner details'); ?></strong> (<?php echo $viewData["error"]; ?>)</p></div>
 	<form name="form1" method="post" />
@@ -64,9 +76,9 @@
 <?php else: ?>
 <div class="wrap">
 <?php if ($viewData["showMessage"]): ?>
-	<div id="message" class="updated"><p><strong><?php _e('The All in One Video Pack settings have been saved.'); ?></strong></p></div>
+	<div id="message" class="updated"><p><strong><?php _e('The x7Host Videox7 UGC Plugin settings have been saved.'); ?></strong></p></div>
 	<?php endif; ?>
-	<h2><?php _e('All in One Video Pack Settings'); ?></h2>
+	<h2><?php _e('x7Host Videox7 UGC Plugin Settings'); ?></h2>
 	<form name="form1" method="post" />
 		<br />
 		<table id="kalturaCmsLogin">
@@ -80,8 +92,8 @@
 			</tr>
 			<tr class="kalturaLastRow">
 				<td colspan="2" align="left" style="padding-top: 10px;padding-left:10px">
-					<a href="http://www.kaltura.com/index.php/kmc" target="_blank">Login</a> to the Kaltura Management Console (KMC) for advanced <br />media management<br />
-					Learn More about <a href="http://wordpress.kaltura.org/" target="_blank">new plugin features</a>
+					<a href="http://www.kaltura.com/kmc" target="_blank">Login</a> to the Kaltura.com SaaS Management Console (KMC) if using.<br />
+					Or, <a href="<?php echo($x7server); ?>/kmc" target="_blank">Login</a> to your KalturaCE Management Console (KMC) if using.<br />
 				</td>
 			</tr>
 		</table>
@@ -120,6 +132,27 @@
 					<br />
 				</td>
 			</tr>
+			<tr valign="top">
+				<td><?php _e("Enable user posts?"); ?></td>
+				<td>
+					<input type="checkbox" id="allow_posts" name="allow_posts" <?php echo @get_option("x7allowposts") ? "checked=\"checked\"" : ""; ?> />
+					<br />
+				</td>
+			</tr>
+			<tr valign="top">
+				<td><?php _e("Enable standard editor use?"); ?></td>
+				<td>
+					<input type="checkbox" id="allow_standard" name="allow_standard" <?php echo @get_option("x7allowstandard") ? "checked=\"checked\"" : ""; ?> />
+					<br />
+				</td>
+			</tr>
+			<tr valign="top">
+				<td><?php _e("Enable advanced editor use?"); ?></td>
+				<td>
+					<input type="checkbox" id="allow_advanced" name="allow_advanced" <?php echo @get_option("x7allowadvanced") ? "checked=\"checked\"" : ""; ?> />
+					<br />
+				</td>
+			</tr>
 			<?php
 				$kmodel = KalturaModel::getInstance();
 				$players = $kmodel->listPlayersUiConfs(); 
@@ -140,6 +173,28 @@
 					<?php endforeach; ?>
 				</td>
 			</tr>
+			<tr valign="top">
+				<td><?php _e("Default playlist design:"); ?></td>
+				<td>
+					<?php foreach($players->objects as $player): ?>
+						<input type="radio" name="default_playlist_type" id="default_playlist_type_<?php echo $player->id; ?>" value="<?php echo $player->id; ?>" <?php echo @get_option("x7pluiconfid") == $player->id ? "checked=\"checked\"" : ""; ?>/>&nbsp;&nbsp;<label for="default_playlist_type_<?php echo $player->id; ?>"><?php echo $player->name; ?></label><br />
+					<?php endforeach; ?>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td><?php _e("Default admin player design for logged in users:"); ?></td>
+				<td>
+					<?php foreach($players->objects as $player): ?>
+						<input type="radio" name="admin_player_type" id="admin_player_type_<?php echo $player->id; ?>" value="<?php echo $player->id; ?>" <?php echo @get_option("x7adminuiconfid") == $player->id ? "checked=\"checked\"" : ""; ?>/>&nbsp;&nbsp;<label for="admin_player_type_<?php echo $player->id; ?>"><?php echo $player->name; ?></label><br />
+					<?php endforeach; ?>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td><?php _e("Default Contribution Wizard UIConfID:"); ?></td>
+				<td>
+					<input type="text" name="default_kcw_type" id="default_kcw_type" value="<?php echo(get_option("x7kcwuiconfid")); ?>"/>&nbsp;&nbsp;<br />
+				</td>
+			</tr>
 			<tr>
 				<td colspan="2">
 					<br />
@@ -157,7 +212,7 @@
 	<script type="text/javascript">
 	
 		function updateFormState() {
-			// premissions
+			// permissions
 			jQuery("input[type=radio][name=permissions_add]").attr('disabled', false);
 			
 			var checkedEdit = jQuery("input[name=permissions_edit][checked]");

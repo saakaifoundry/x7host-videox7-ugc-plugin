@@ -34,6 +34,13 @@ if (@$_POST['is_postback'] == "postback") {
         update_option("kaltura_permissions_edit", 0);
         update_option("kaltura_enable_video_comments", true);
         update_option("kaltura_allow_anonymous_comments", true);
+		update_option("x7uiconfid", "1727910");
+		update_option("x7pluiconfid", "1727911");
+		update_option("x7adminuiconfid", "1727910");
+		update_option("x7kcwuiconfid", "1727883");
+		update_option("x7allowposts", true);
+		update_option("x7allowstandard", true);
+		update_option("x7allowadvanced", true);
         
         $viewData["success"] = true;
     }
@@ -42,7 +49,7 @@ if (@$_POST['is_postback'] == "postback") {
 
 <?php if ($viewData["error"]): ?>
 	<div class="wrap">
-		<h2><?php _e('All in One Video Pack Installation'); ?></h2>
+		<h2><?php _e('x7Host Videox7 UGC Plugin Installation'); ?></h2>
 		<br />
 		<div class="error">
 			<p>
@@ -60,13 +67,13 @@ if (@$_POST['is_postback'] == "postback") {
 		<br />
 		<div class="updated fade">
 			<p>
-				<strong>You have successfully installed the All in One Video Pack. </strong>
+				<strong>You have successfully installed the x7Host Videox7 UGC Plugin. </strong>
 			</p>
 		</div>
 		<p>
 			Next time you write a post, you will see a new icon in the Add Media toolbar that allows you to upload and edit Interactive Videos. <br />
 			<br />
-			Note that a Kaltura Partner ID has been created for you, and an email has been sent to the specified email address containing the ID information. The email you received also includes a link and a password to the Kaltura Management Console (KMC), where you can track and manage all information related to the All in One Video Pack.<br />
+			If you created a new publisher account with Kaltura.com SaaS, check your email for details about your new account.<br />
 		</p>
 		<br />
 		<div class="wrap">
@@ -75,10 +82,12 @@ if (@$_POST['is_postback'] == "postback") {
 	</div>
 <?php else: ?>
 	<div class="wrap">
-	<h2><?php _e('All in One Video Pack Installation'); ?></h2>
+	<h2><?php _e('x7Host Videox7 UGC Plugin Installation'); ?></h2>
     <p>
 	    Please enter your Kaltura Management Console (KMC) Email & password
     </p>
+	<p>IMPORTANT!  If you are using your own, self-hosted KalturaCE Server, you MUST edit the "KALTURA_SERVER_URL" and "KALTURA_CDN_URL" variables in this plugin's "settings.php" file first!  Set both variables to be the address of your server, for example: "http://kaltura.myserver.com"
+	</p>
 	<form name="form1" method="post" />
 		<table class="form-table">
 			<tr valign="top">
