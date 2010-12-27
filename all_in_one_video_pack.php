@@ -536,7 +536,14 @@ function x7video_shortcode($atts)
 {
    extract( shortcode_atts( array(
       'widget' => 'kcw',
-      'bar' => 'whatev',
+      'show' => 'all',
+      'namelike' => 'false',
+      'user' => 'false',
+      'tags' => 'false',
+      'admintags' => 'false',
+      'category' => 'false',
+      'pagesize' => '500',
+      'pageindex' => '1'
       ), $atts ) );
 
 	//First, master check for logged in wordpress user.  ALL widgets will not function if this fails.
@@ -570,25 +577,17 @@ if (is_user_logged_in()){
 	$x7allowadvanced = get_option('x7allowadvanced');
 
 /***********************************************************************************************************************
- * VIDEO GALLERY SHORTCODE *
+ * VIDEO SCROLL GALLERY SHORTCODE *
  * ********************************************************************************************************************/	
-if ($widget=="gallery"){
+if ($widget=="scrollgallery"){
 	//Kaltura Contribution Wizard (Uploader)
 	//Start Kaltura "Admin" Session
 	$kmodel = KalturaModel::getInstance();
 	$ks = $kmodel->getAdminSession("","$user_login");
 	if (!$ks)
 		wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
-	
-	$filter = new KalturaMediaEntryFilter();
-	$filter->statusEqual = 2; //ready
-	$filter->mediaTypeEqual = 1; //video
-	//$filter->tagsLike = "demos";
 
-	$pager = new KalturaFilterPager();
-	$pager->pageSize = 50;
-	$pager->pageIndex = 1;
-	$list = $kmodel->listUserEntries($user_login, "50", "1"); // list all of the media items in the partner
+	$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, $show, $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
 	
 	//player vars
 		$entryId = $list->objects[0]->id;
@@ -596,11 +595,17 @@ if ($widget=="gallery"){
 		$player_height = 310;
 		$backgroundColor = "000000";
 	
+	if ($show == 'playlists') {
+		$x7galuiconfid = $x7pluiconfid;
+	} else {
+		$x7galuiconfid = $x7uiconfid;
+	}
+	
 	$return .= <<<GALLERY
 	<script type="text/javascript">
 	    if (swfobject.hasFlashPlayerVersion("9.0.0")) {
 	      var fn = function() {
-	        var att = { data:"$x7server/index.php/kwidget/wid/_$x7kalpartnerid/uiconf_id/$x7uiconfid", 
+	        var att = { data:"$x7server/index.php/kwidget/wid/_$x7kalpartnerid/uiconf_id/$x7galuiconfid", 
 						width:"$player_width", 
 						height:"$player_height",
 						id:"mykdp",
@@ -635,8 +640,10 @@ GALLERY;
 						$name     = $mediaEntry->name; // get the entry name
 						$id       = $mediaEntry->id;
 						$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
+						$submitter = $mediaEntry->userId;
 						$description = $mediaEntry->description;
-					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Description</strong>: $description' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
+						$description = str_replace("'", "", "$description"); 
+					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Author</strong>: $submitter<br /><strong>Description</strong>: $description' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
 				}
 	$return .= <<<GALLERY2
 			</div>
@@ -649,17 +656,31 @@ GALLERY;
 
 	<script type="text/javascript">
 		function LoadMedia(entryId) {
-			//jQuery('#mykdp').get(0).insertMedia("-1",entryId,'true');
-			jQuery('#mykdp').get(0).sendNotification("changeMedia",{entryId:entryId});
+GALLERY2;
+		if ($show == 'playlists'){
+			$plurl = "$x7server/index.php/partnerservices2/executeplaylist?partner_id=$x7kalpartnerid&subp_id=$x7kalsubpartnerid&format=8&playlist_id=";
+			$return .= <<<PLURL
+			var plurl = '$plurl'+entryId;
+			plurl = encodeURI(plurl);
+			jQuery('#mykdp').get(0).setAttribute('playlistAPI.kpl0Url',plurl);
+PLURL;
+
+		} else {
+			$return .= "jQuery('#mykdp').get(0).sendNotification('changeMedia',{entryId:entryId})";
+		}
+	$return .= <<<GALLERY3
+	
 		}
 		jQuery(document).ready(function() {
 			jQuery("div.scrollable").scrollable().find("a").tooltip({
 				tip: '#tooltip',
-				position: 'bottom center'
+				position: 'bottom center',
+				effect: 'slide',
+				delay: '2000'
 			});
 		}); 
 	</script>
-GALLERY2;
+GALLERY3;
 
 	} //end if widget is gallery
 /***********************************************************************************************************************
@@ -861,7 +882,10 @@ if ($widget=="useruploads"){
 			}
 			jQuery(document).ready(function() {
 				addSuccessDiv();
-				jQuery("td.tt[title]").tooltip();
+				jQuery("td.tt[title]").tooltip({
+					position: 'bottom center',
+					effect: 'slide'
+				});
 			
 			jQuery("#x7entriestable").dataTable({
 				"bJQueryUI": true,
@@ -1145,7 +1169,10 @@ ENTRY_DIV;
 			}
 			jQuery(document).ready(function() {
 				addSuccessDiv();
-				jQuery("td.tt[title]").tooltip();
+				jQuery("td.tt[title]").tooltip({
+					position: 'bottom center',
+					effect: 'slide'
+				});
 				
 			x7table = jQuery("#x7entriestable").dataTable({
 				"bJQueryUI": true,
@@ -1584,7 +1611,10 @@ if ($widget=="userplaylists"){
 		jQuery(document).ready(function() {
 			addSuccessDiv();
 
-			jQuery("td.tt[title]").tooltip();
+			jQuery("td.tt[title]").tooltip({
+				effect: 'slide',
+				position: 'bottom center'
+			});
 				
 			x7table = jQuery("#x7entriestable").dataTable({
 				"bJQueryUI": true,

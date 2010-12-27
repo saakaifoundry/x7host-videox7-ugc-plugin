@@ -2,7 +2,7 @@
 .x7drafts { width:680px; }
 .tooltip {
     display:none;
-    background:transparent url("../images/black_arrow.png");
+    background:transparent url("../images/black_arrow_bottom.png");
     font-size:12px;
     height:70px;
     width:160px;
@@ -35,7 +35,7 @@ textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; paddi
 	position:relative;
 	overflow:hidden;
 	width: 505px;
-	height:100px;
+	height:90px;
 
 	/* custom decorations */
 	border:1px solid #ccc;
@@ -69,7 +69,6 @@ textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; paddi
 	.items a {
 		display:block;
 		float:left;
-		margin:20px 15px;
 	} 
 
 /* single scrollable item */

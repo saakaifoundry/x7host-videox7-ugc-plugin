@@ -193,6 +193,36 @@ class KalturaModel
 		return $entries;
 	}
 
+	function listAllEntriesByPagerandFilter($partnerIdEqual, $show = 'all', $namelike = 'false', $user = 'false', $tags = 'false', $admintags = 'false', $category = 'false', $pagesize = '500', $pageindex = '1')
+	{
+		if (!$this->session)
+			$this->startSession();
+			
+		$filter = new KalturaBaseEntryFilter();
+		$filter->orderBy = KalturaBaseEntryOrderBy_CREATED_AT_DESC;
+		$filter->partnerIdEqual = $partnerIdEqual;
+		if ($show == 'all') {
+			$filter->typeIn = implode(",", array(KalturaEntryType_MEDIA_CLIP, KalturaEntryType_MIX));
+		} elseif ($show == 'media') {
+			$filter->typeIn = KalturaEntryType_MEDIA_CLIP;
+		} elseif ($show == 'mixes') {
+			$filter->typeIn = KalturaEntryType_MIX;
+		} elseif ($show == 'playlists') {
+			$filter->typeIn = KalturaEntryType_PLAYLIST;
+		}
+		if ($category != 'false') { $filter->categoriesMatchOr = $category; }
+		if ($namelike != 'false') { $filter->nameLike = $namelike; }
+		if ($user != 'false') { $filter->userIdEqual = $user; }
+		if ($tags != 'false') { $filter->tagsMultiLikeOr = $tags; }
+		if ($admintags != 'false') { $filter->adminTagsMultiLikeOr = $tags; }
+		
+		$pager = new KalturaFilterPager();
+		$pager->pageSize = $pagesize;
+		$pager->pageIndex = $pageindex;
+			
+			return $this->client->baseEntry->listAction($filter, $pager);
+	}
+
 	function deleteEntry($mediaEntryId)
 	{
 		if (!$this->session)
