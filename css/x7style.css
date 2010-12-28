@@ -116,7 +116,7 @@ a.right:active 	{ background-position:-60px -30px; }
 
 
 /* left */
-a.left				{ margin-left: 0px; margin-top: 360px; } 
+a.left				{ margin-left: 0px; } 
 a.left:hover  		{ background-position:-30px 0; }
 a.left:active  	{ background-position:-60px 0; }
 
@@ -140,4 +140,70 @@ a.down:active  	{ background-position:-60px -30px; }
 /* disabled navigational button */
 a.disabled {
 	visibility:hidden !important;		
-} 	
+}
+/*********************************************************************************************
+
+Video Gallery CSS  -----------  [x7video widget="videogallery"]
+
+*********************************************************************************************/
+#x7vidposts {
+width: 660px;
+float: left;
+padding: 25px 0 30px 0;
+}
+
+.x7gallery-item {
+width: 200px;
+float: left;
+margin: 0 10px 20px 0;
+border: solid 1px white;
+background-color: white;
+-moz-border-radius: 15px;
+border-radius: 15px;
+}
+
+.x7gallery-item-single {
+margin: 0;
+}
+
+.x7gallery-item h2 {
+border-bottom: 1px solid #E1E1E1;
+font-size: 32px;
+margin: 0 0 5px 0;
+padding: 0 0 5px 5px;
+}
+
+.x7post-thumbnail {
+width: 200px;
+height: 150px;
+float: left;
+margin: 0 0 10px 0;
+}
+
+.x7thumbnail-frame {
+background: url(images/frame.png) 0 0;
+width: 200px;
+height: 150px;
+position: absolute;
+}
+
+.x7thumbnail-frame:hover {
+background: url(images/frame.png) 0 -150px;
+width: 200px;
+height: 150px;
+position: absolute;
+}
+
+.x7thumbnail-frame-video {
+background: url(images/frame-video.png) 0 0;
+width: 200px;
+height: 150px;
+position: absolute;
+}
+
+.x7thumbnail-frame-video:hover {
+background: url(images/frame-video.png) 0 -150px;
+width: 200px;
+height: 150px;
+position: absolute;
+}
