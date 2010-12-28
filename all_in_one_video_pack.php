@@ -577,10 +577,9 @@ if (is_user_logged_in()){
 	$x7allowadvanced = get_option('x7allowadvanced');
 
 /***********************************************************************************************************************
- * VIDEO SCROLL GALLERY SHORTCODE *
+ * REGULAR VIDEO GALLERY SHORTCODE *
  * ********************************************************************************************************************/	
-if ($widget=="scrollgallery"){
-	//Kaltura Contribution Wizard (Uploader)
+if ($widget=="videogallery"){
 	//Start Kaltura "Admin" Session
 	$kmodel = KalturaModel::getInstance();
 	$ks = $kmodel->getAdminSession("","$user_login");
@@ -588,18 +587,51 @@ if ($widget=="scrollgallery"){
 		wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
 
 	$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, $show, $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
+				$itemcount = "0";
+				foreach ($list->objects as $mediaEntry) {
+					$itemcount++;
+					if ($itemcount == "5"){
+						$return .= "</div><div>";
+						$itemcount = "0";
+					}
+						$name     = $mediaEntry->name; // get the entry name
+						$id       = $mediaEntry->id;
+						$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
+						$createdat = (string) $mediaentry->createdAt;
+						$createdat = date(DATE_RFC822, $createdat);
+						$author = $mediaEntry->userId;
+						$description = $mediaEntry->description;
+						$description = str_replace("'", "", "$description"); 
+					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Creator</strong>: $submitter' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
+				}
+	} //end if widget is regular gallery
+/***********************************************************************************************************************
+ * VIDEO SCROLL GALLERY SHORTCODE *
+ * ********************************************************************************************************************/	
+if ($widget=="scrollgallery"){
+	//Start Kaltura "Admin" Session
+	$kmodel = KalturaModel::getInstance();
+	$ks = $kmodel->getAdminSession("","$user_login");
+	if (!$ks)
+		wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
 	
-	//player vars
-		$entryId = $list->objects[0]->id;
-		$player_width = 500;
-		$player_height = 310;
-		$backgroundColor = "000000";
+	$plurl = "$x7server/index.php/partnerservices2/executeplaylist?partner_id=$x7kalpartnerid&subp_id=$x7kalsubpartnerid&format=8&playlist_id=";
+	
+	$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, $show, $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
 	
 	if ($show == 'playlists') {
 		$x7galuiconfid = $x7pluiconfid;
 	} else {
 		$x7galuiconfid = $x7uiconfid;
 	}
+	
+	$player = $kmodel->getPlayerUiConf($x7galuiconfid);
+	
+	//player vars
+		$entryId = $list->objects[0]->id;
+		$player_width = $player->width;
+		$player_height = $player->height;
+		$backgroundColor = "000000";
 	
 	$return .= <<<GALLERY
 	<script type="text/javascript">
@@ -610,26 +642,45 @@ if ($widget=="scrollgallery"){
 						height:"$player_height",
 						id:"mykdp",
 						name:"mykdp" };
-	        var par = { flashvars:"&entryId=$entryId" +
+GALLERY;
+			if ($show != 'playlists') {
+				$return .= <<<GALLERY4
+				var par = { flashvars:"&entryId=$entryId" +
 						"&autoPlay=true",
 						allowScriptAccess:"always",
 						allowfullscreen:"true",
 						bgcolor:"$backgroundColor"
 					};
+GALLERY4;
+			} else {
+				$plurl2 = $plurl.$entryId;
+				$plurl2 = urlencode($plurl2);
+				$return .= <<<GALLERY5
+				
+				var par = { flashvars:"&playlistAPI.autoInsert=true&playlistAPI.kpl0Name=Playlist&playlistAPI.kpl0Url=$plurl2" +
+						"&autoPlay=true",
+						allowScriptAccess:"always",
+						allowfullscreen:"true",
+						bgcolor:"$backgroundColor"
+					};
+GALLERY5;
+			}
+			$return .= <<<GALLERY6
 	        var id = "mykdp";
 	        var myObject = swfobject.createSWF(att, par, id);
-	      };
+	      }
 	      swfobject.addDomLoadEvent(fn);
 	    }
     </script>
 
 		<div id="mykdp">KDP Should be loaded here...</div>
 		<!-- "previous page" action -->
+		<div id="scrollwrap">
 		<a class="prev browse left"></a>
 		<div class="scrollable"> 
 			<div class="items">
 			<div>
-GALLERY;
+GALLERY6;
 				$itemcount = "0";
 				foreach ($list->objects as $mediaEntry) {
 					$itemcount++;
@@ -643,7 +694,7 @@ GALLERY;
 						$submitter = $mediaEntry->userId;
 						$description = $mediaEntry->description;
 						$description = str_replace("'", "", "$description"); 
-					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Author</strong>: $submitter<br /><strong>Description</strong>: $description' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
+					$return .= "<a class='tt' title='<strong>Name</strong>: $name<br /><strong>Creator</strong>: $submitter' href='javascript:LoadMedia(\"$id\")'><img alt='$name' title='$name' src='$thumbUrl'></a>";
 				}
 	$return .= <<<GALLERY2
 			</div>
@@ -652,17 +703,34 @@ GALLERY;
 		<!-- "next page" action -->
 		<a class="next browse right"></a>
 		<div class="tooltip" id="tooltip"></div>
+		</div>
 		<br clear="all" />
 
 	<script type="text/javascript">
 		function LoadMedia(entryId) {
+		
 GALLERY2;
 		if ($show == 'playlists'){
-			$plurl = "$x7server/index.php/partnerservices2/executeplaylist?partner_id=$x7kalpartnerid&subp_id=$x7kalsubpartnerid&format=8&playlist_id=";
 			$return .= <<<PLURL
 			var plurl = '$plurl'+entryId;
-			plurl = encodeURI(plurl);
-			jQuery('#mykdp').get(0).setAttribute('playlistAPI.kpl0Url',plurl);
+			plurl = encodeURIComponent(plurl);
+			console.log("plurl is %s", plurl);
+				var par = { flashvars:"&playlistAPI.autoInsert=true" +
+						"&playlistAPI.kpl0Name=Playlist" +
+						"&playlistAPI.kpl0Url=" + 
+						plurl +
+						"&autoPlay=true",
+						allowScriptAccess:"always",
+						allowfullscreen:"true",
+						bgcolor:"$backgroundColor"
+					};
+				var att = { data:"$x7server/index.php/kwidget/wid/_$x7kalpartnerid/uiconf_id/$x7galuiconfid", 
+						width:"$player_width", 
+						height:"$player_height",
+						id:"mykdp",
+						name:"mykdp" };
+				var id = "mykdp";
+			var myObject = swfobject.createSWF(att, par, id);
 PLURL;
 
 		} else {
@@ -682,7 +750,7 @@ PLURL;
 	</script>
 GALLERY3;
 
-	} //end if widget is gallery
+	} //end if widget is scroll gallery
 /***********************************************************************************************************************
  * UPLOAD NEW MEDIA SHORTCODE *
  * ********************************************************************************************************************/	
