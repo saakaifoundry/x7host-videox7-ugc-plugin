@@ -1462,9 +1462,9 @@ DRAFTS;
 			} // end if drafts
 		} //end if widget is user posts
 /***********************************************************************************************************************
- * MAKE PLAYLIST WIDGET SHORTCODE *
+ * OLD! MAKE PLAYLIST WIDGET SHORTCODE *
  * ********************************************************************************************************************/
-if ($widget=="makeplaylist"){
+if ($widget=="makeplaylistold"){
 		//Start Kaltura admin session
 		$kmodel = KalturaModel::getInstance();
 		$ks = $kmodel->getAdminSession("","$user_login");
@@ -1614,6 +1614,212 @@ ENTRY_DIV2;
 		</div>
 INFOBOX2;
 		
+	} // end if widget is makeplaylist
+/***********************************************************************************************************************
+ * MAKE PLAYLIST WIDGET SHORTCODE *
+ * ********************************************************************************************************************/
+if ($widget=="makeplaylist"){
+		//Start Kaltura admin session
+		$kmodel = KalturaModel::getInstance();
+		$ks = $kmodel->getAdminSession("","$user_login");
+		if (!$ks)
+			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
+		$ksget = urlencode($ks);
+		//get media
+		$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, $show, $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
+		
+		//add javascript and info box
+		$return .= <<<INFOBOX
+		
+		<style>
+	#demo-frame > div.demo { padding: 10px !important; }
+	.scroll-pane { overflow: auto; width: 99%; float:left; }
+	.scroll-content { width: 2440px; float: left; }
+	.scroll-content-item { width: 100px; height: 100px; float: left; margin: 10px; font-size: 3em; line-height: 96px; text-align: center; }
+	* html .scroll-content-item { display: inline; } /* IE6 float double margin bug */
+	.scroll-bar-wrap { clear: left; padding: 0 4px 0 2px; margin: 0 -1px -1px -1px; }
+	.scroll-bar-wrap .ui-slider { background: none; border:0; height: 2em; margin: 0 auto;  }
+	.scroll-bar-wrap .ui-handle-helper-parent { position: relative; width: 100%; height: 100%; margin: 0 auto; }
+	.scroll-bar-wrap .ui-slider-handle { top:.2em; height: 1.5em; }
+	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
+	</style>
+
+		
+		<script type="text/javascript">
+		
+		//list users created playlists
+		jQuery(document).ready(function() {
+		
+		//scrollpane parts
+		var scrollPane = jQuery( ".scroll-pane" ),
+			scrollContent = jQuery( ".scroll-content" );
+		
+		//build slider
+		var scrollbar = jQuery( ".scroll-bar" ).slider({
+			slide: function( event, ui ) {
+				if ( scrollContent.width() > scrollPane.width() ) {
+					scrollContent.css( "margin-left", Math.round(
+						ui.value / 100 * ( scrollPane.width() - scrollContent.width() )
+					) + "px" );
+				} else {
+					scrollContent.css( "margin-left", 0 );
+				}
+			}
+		});
+		
+		//append icon to handle
+		var handleHelper = scrollbar.find( ".ui-slider-handle" )
+		.mousedown(function() {
+			scrollbar.width( handleHelper.width() );
+		})
+		.mouseup(function() {
+			scrollbar.width( "100%" );
+		})
+		.append( "<span class='ui-icon ui-icon-grip-dotted-vertical'></span>" )
+		.wrap( "<div class='ui-handle-helper-parent'></div>" ).parent();
+		
+		//change overflow to hidden now that slider handles the scrolling
+		scrollPane.css( "overflow", "hidden" );
+		
+		//size scrollbar and handle proportionally to scroll distance
+		function sizeScrollbar() {
+			var remainder = scrollContent.width() - scrollPane.width();
+			var proportion = remainder / scrollContent.width();
+			var handleSize = scrollPane.width() - ( proportion * scrollPane.width() );
+			scrollbar.find( ".ui-slider-handle" ).css({
+				width: handleSize,
+				"margin-left": -handleSize / 2
+			});
+			handleHelper.width( "" ).width( scrollbar.width() - handleSize );
+		}
+		
+		//reset slider value based on scroll content position
+		function resetValue() {
+			var remainder = scrollPane.width() - scrollContent.width();
+			var leftVal = scrollContent.css( "margin-left" ) === "auto" ? 0 :
+				parseInt( scrollContent.css( "margin-left" ) );
+			var percentage = Math.round( leftVal / remainder * 100 );
+			scrollbar.slider( "value", percentage );
+		}
+		
+		//if the slider is 100% and window gets larger, reveal content
+		function reflowContent() {
+				var showing = scrollContent.width() + parseInt( scrollContent.css( "margin-left" ), 10 );
+				var gap = scrollPane.width() - showing;
+				if ( gap > 0 ) {
+					scrollContent.css( "margin-left", parseInt( scrollContent.css( "margin-left" ), 10 ) + gap );
+				}
+		}
+		
+		//change handle position on window resize
+		jQuery( window ).resize(function() {
+			resetValue();
+			sizeScrollbar();
+			reflowContent();
+		});
+		//init scrollbar size
+		setTimeout( sizeScrollbar, 10 );//safari wants a timeout
+		
+		jQuery("#vidlist, #playlist").sortable({
+			connectWith: '.connectedSortable',
+			revert: 'true',
+			tolerance: 'pointer',
+			placeholder: 'ui-state-highlight'
+		}).disableSelection();
+		jQuery(".draggable").draggable({
+			cursor: 'crosshair',
+			cursorAt: { top: 50, left: 50 },
+			opacity: '0.6',
+			containment: '#x7wrapdiv',
+			revert: 'valid',
+			revertDuration: '1000',
+		});
+		jQuery("#listname").val("Playlist Name Here");
+	    });//end document ready
+		
+		function x7ListPreview()
+		{
+			var valError = "noerror";
+			arrEids = []; //clear out the eids array
+			var listname;
+			jQuery("#playlist li").each(
+				function( intindex ){
+					arrEids[intindex] = jQuery( this ).attr("eid");
+				});
+			if (arrEids.length < 2)
+			{
+				valError = "error";
+				alert("New playlists must contain at least two videos!");
+			}
+			listname = jQuery("#listname").val(); //get entered listname text
+			if (listname.length < 5)
+			{
+				valError = "error";
+				alert("Playlist name must contain at least five characters!");
+			}
+			if (valError != "error")
+			{
+				jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
+				jQuery.post(
+					"$pluginurl/x7listadd.php",
+					{'x7server': "$x7server", 'x7kalpartnerid': "$x7kalpartnerid", 'ks': "$ks", 'eids[]': arrEids, 'listname': listname, 'ul': "$user_login", 'x7bloghome': "$x7bloghome"},
+					function ( data ){
+						jQuery("#x7loading").html('');
+						if (data != "error"){
+							var theUrl;
+							theUrl = "$plugin_url/x7listplayer.php";
+							Shadowbox.open({
+							content:    theUrl + "?listid=" + data + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
+							player:     "iframe",
+							height:     400,
+							width:      800
+							});
+						} else {
+							alert("Error creating playlist.");
+						}; //end if not server data returned error
+					}); //end post
+	    };//end if not valerror error
+		}//end x7listpreview
+		
+		</script>
+		<div class="ui-widget">
+      <div class="ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+	    <strong>Quick tip:  </strong>This page lets you make playlists only from videos and mixes that you yourself have uploaded and made.</p>
+      </div>
+		</div>
+		<br>
+		<br>
+		<div class="scroll-pane ui-widget ui-widget-header ui-corner-all">
+			<div class="scroll-content">
+			<ul id="vidlist" class="connectedSortable">
+INFOBOX;
+				$itemcount = "0";
+				foreach ($list->objects as $mediaEntry) {
+					$itemcount++;
+					$name     = $mediaEntry->name; // get the entry name
+					$id       = $mediaEntry->id;
+					$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
+					$submitter = $mediaEntry->userId;
+					$description = $mediaEntry->description;
+					$description = str_replace("'", "", "$description"); 
+					$return .= "<li><div class='scroll-content-item ui-widget-header'><img height='90' width='120' src='$thumbUrl' /></div></li>";
+				}
+		
+		$return .= <<<INFOBOX3
+		</ul>
+		</div>
+		<div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
+		<div class="scroll-bar"></div>
+		</div>
+		</div>
+			<h3>New Playlist</h3>
+			<a onclick="x7ListPreview()">[Save and Preview]</a><br />
+			<textarea id="listname"></textarea>
+			<ul id="playlist" class="connectedSortable">
+			</ul>
+INFOBOX3;
+
 	} // end if widget is makeplaylist
 /***********************************************************************************************************************
  * VIEW USER PLAYLISTS WIDGET SHORTCODE *
