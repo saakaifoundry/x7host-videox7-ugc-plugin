@@ -11,21 +11,21 @@
 }
 
 #vidlist { list-style-type: none; margin: 0px; padding: 0px; border: dashed; border-width: thin; }
+#vidlist li { display: inline; }
 #playlist { width: 153px; height: 110px; list-style-type: none; margin: 0px; padding: 0px; border: dashed; border-width: thin; }
 #playlist li, #vidlist li { padding: 5px; font-size: 1.2em; width: 135px; height: 100px; border: dashed; border-width: thin; }
-#vidlistdiv, #betweendiv, #playlistdiv { float: left; padding:15px; }
-#betweendiv { padding-top: 120px; }
+
 textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }
 
 #x7wrapdiv, #x7loading { display: none; }
 			#sortable, #trash { list-style-type: none; margin: 0; padding: 0; width: 100px; }
-			#sortable li, #trash li { margin: 0 5px 5px 5px; padding: 5px; width: 90px; height: 60px; }
+			#sortable li, #trash li { margin: 0 5px 5px 5px; padding: 5px; width: 90px; height: 60px; float: left; }
 			html>body #sortable li { height: 61px; line-height: 1.2em; }
 			html>body #trash li { height: 91px; line-height: 1.2em; }
 			.ui-state-highlight { height: 1.5em; line-height: 1.2em; }
 			textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }	    
 
-			/*
+/*
 	root element for the scrollable.
 	when scrolling occurs this element stays still.
 */
