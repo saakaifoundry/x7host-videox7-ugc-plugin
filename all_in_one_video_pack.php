@@ -714,7 +714,6 @@ GALLERY2;
 			$return .= <<<PLURL
 			var plurl = '$plurl'+entryId;
 			plurl = encodeURIComponent(plurl);
-			console.log("plurl is %s", plurl);
 				var par = { flashvars:"&playlistAPI.autoInsert=true" +
 						"&playlistAPI.kpl0Name=Playlist" +
 						"&playlistAPI.kpl0Url=" + 
@@ -1631,20 +1630,6 @@ if ($widget=="makeplaylist"){
 		//add javascript and info box
 		$return .= <<<INFOBOX
 		
-		<style>
-	#demo-frame > div.demo { padding: 10px !important; }
-	.scroll-pane { overflow: auto; width: 99%; float:left; }
-	.scroll-content { width: 2440px; float: left; }
-	.scroll-content-item { width: 100px; height: 100px; float: left; margin: 10px; font-size: 3em; line-height: 96px; text-align: center; }
-	* html .scroll-content-item { display: inline; } /* IE6 float double margin bug */
-	.scroll-bar-wrap { clear: left; padding: 0 4px 0 2px; margin: 0 -1px -1px -1px; }
-	.scroll-bar-wrap .ui-slider { background: none; border:0; height: 2em; margin: 0 auto;  }
-	.scroll-bar-wrap .ui-handle-helper-parent { position: relative; width: 100%; height: 100%; margin: 0 auto; }
-	.scroll-bar-wrap .ui-slider-handle { top:.2em; height: 1.5em; }
-	.scroll-bar-wrap .ui-slider-handle .ui-icon { margin: -8px auto 0; position: relative; top: 50%; }
-	</style>
-
-		
 		<script type="text/javascript">
 		
 		//list users created playlists
@@ -1720,20 +1705,18 @@ if ($widget=="makeplaylist"){
 		//init scrollbar size
 		setTimeout( sizeScrollbar, 10 );//safari wants a timeout
 		
-		jQuery("#vidlist, #playlist").sortable({
+		jQuery("#playlist, #vidlist").sortable({
+			start: function (e, ui) { 
+				// modify ui.placeholder however you like
+				ui.placeholder.html("<span class='x7placeholder'></span>");
+				},
 			connectWith: '.connectedSortable',
+			forcePlaceholderSize: 'true',
 			revert: 'true',
 			tolerance: 'pointer',
 			placeholder: 'ui-state-highlight'
 		}).disableSelection();
-		jQuery(".draggable").draggable({
-			cursor: 'crosshair',
-			cursorAt: { top: 50, left: 50 },
-			opacity: '0.6',
-			containment: '#x7wrapdiv',
-			revert: 'valid',
-			revertDuration: '1000',
-		});
+
 		jQuery("#listname").val("Playlist Name Here");
 	    });//end document ready
 		
@@ -1791,8 +1774,7 @@ if ($widget=="makeplaylist"){
 		<br>
 		<br>
 		<div class="scroll-pane ui-widget ui-widget-header ui-corner-all">
-			<div class="scroll-content">
-			<ul id="vidlist" class="connectedSortable">
+			<ul id="vidlist" class="scroll-content connectedSortable">
 INFOBOX;
 				$itemcount = "0";
 				foreach ($list->objects as $mediaEntry) {
@@ -1803,12 +1785,11 @@ INFOBOX;
 					$submitter = $mediaEntry->userId;
 					$description = $mediaEntry->description;
 					$description = str_replace("'", "", "$description"); 
-					$return .= "<li><div class='scroll-content-item ui-widget-header'><img height='90' width='120' src='$thumbUrl' /></div></li>";
+					$return .= "<div class='scroll-content-item ui-widget-header'><img height='90' width='120' src='$thumbUrl' /></div>";
 				}
 		
 		$return .= <<<INFOBOX3
-		</ul>
-		</div>
+			</ul>
 		<div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
 		<div class="scroll-bar"></div>
 		</div>
