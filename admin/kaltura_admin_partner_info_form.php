@@ -30,6 +30,7 @@
 		update_option("x7allowposts", $allow_posts);
 		update_option("x7allowstandard", $allow_standard);
 		update_option("x7allowadvanced", $allow_advanced);
+		update_option("x7html5enabled", $enable_html5);
 		
 		$viewData["showMessage"] = true;
 	}
@@ -150,6 +151,13 @@
 				<td><?php _e("Enable advanced editor use?"); ?></td>
 				<td>
 					<input type="checkbox" id="allow_advanced" name="allow_advanced" <?php echo @get_option("x7allowadvanced") ? "checked=\"checked\"" : ""; ?> />
+					<br />
+				</td>
+			</tr>
+			<tr valign="top">
+				<td><?php _e("Enable HTML5 Javascript Library?"); ?></td>
+				<td>
+					<input type="checkbox" id="enable_html5" name="enable_html5" <?php echo @get_option("enable_html5") ? "checked=\"checked\"" : ""; ?> />
 					<br />
 				</td>
 			</tr>
