@@ -143,12 +143,12 @@ class KalturaHelpers
 	
 	function getContributionWizardUrl($uiConfId)
 	{
-		return KalturaHelpers::getServerUrl() . "/kse/ui_conf_id/" . $uiConfId;
+		return KalturaHelpers::getServerUrl() . "/kcw/ui_conf_id/" . $uiConfId;
 	}
 	
 	function getSimpleEditorUrl($uiConfId)
 	{
-		return KalturaHelpers::getServerUrl() . "/kcw/ui_conf_id/" . $uiConfId;
+		return KalturaHelpers::getServerUrl() . "/kse/ui_conf_id/" . $uiConfId;
 	}
 
 	function userCanEdit($override = null) {
@@ -242,6 +242,11 @@ class KalturaHelpers
 	function advancedAllowed()
 	{
 		return @get_option("x7allowadvanced") == true ? true : false;
+	}
+	
+	function html5Enabled()
+	{
+		return @get_option("x7html5enabled") == true ? true : false;
 	}
 	
 	function getThumbnailUrl($widgetId = null, $entryId = null, $width = 240, $height= 180, $version = 100000)
