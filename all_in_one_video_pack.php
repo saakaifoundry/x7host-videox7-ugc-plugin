@@ -22,8 +22,7 @@ if (KalturaHelpers::videoCommentsEnabled()) {
 }
 
 // js
-add_filter('print_scripts_array', 'kaltura_print_js'); // print js files
-add_action('wp_print_scripts', 'kaltura_register_js'); // register js files
+add_action('init', 'kaltura_register_js'); // register js files
 
 // css
 add_action('wp_head', 'kaltura_head'); // print css
@@ -184,7 +183,7 @@ function kaltura_activate()
 	update_option("x7allowposts", true);
 	update_option("x7allowstandard", true);
 	update_option("x7allowadvanced", true);
-
+	update_option("x7html5enabled", true);
 	require_once("kaltura_db.php");
 	kaltura_install_db();
 }
@@ -285,31 +284,44 @@ function kaltura_register_js()
 	$plugin_url = KalturaHelpers::getPluginUrl();
 	if ( is_admin() ) {
 		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version());
+		wp_enqueue_script( 'kadmin' );
 		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
+		wp_enqueue_script( 'swfobject-script15' );
 		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+		wp_enqueue_script( 'kaltura' );
 	}
 	if( !is_admin() ){
 		wp_deregister_script('jquery'); 
-		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4'); 
+		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4');
+		wp_enqueue_script( 'jquery' );
 		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+		wp_enqueue_script( 'kaltura' );
 	//register swfobject for flash embedding
 		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, true);
+		wp_enqueue_script( 'swfobject-script' );
 		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
+		wp_enqueue_script( 'swfobject-script15' );
 	//unregister WP's jquery and jquery-ui and register newest jquery
 		//wp_deregister_script('jquery');
 
 	//includes jquery tools ui
 		wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, true);
+		wp_enqueue_script( 'jquerytools' );
 	//register newest jquery ui
 		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', false, false, true);
+		wp_enqueue_script( 'jqueryui-script' );
 	//register shadowbox
 		wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, true);
+		wp_enqueue_script( 'shadowbox-script' );
 	//register custom x7js
 		wp_register_script('x7ugc-script', $plugin_url . '/js/x7js.js', false, false, true);
+		wp_enqueue_script( 'x7ugc-script' );
 	//register form validator
 		wp_register_script('x7validator-script', $plugin_url . '/js/validator.js', false, false, true);
+		wp_enqueue_script( 'x7validator-script' );
 	//register datatables
 		wp_register_script('x7datatables-script', $plugin_url . '/js/jquery.dataTables.min.js', false, false, true);
+		wp_enqueue_script( 'x7datatables-script' );
 	}
 }
 
