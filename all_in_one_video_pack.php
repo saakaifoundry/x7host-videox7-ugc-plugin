@@ -2127,24 +2127,29 @@ function kaltura_shortcode($attrs)
 				<div id="' . $thumbnailDivId . '" style="width:'.$width.'px;height:'.$height.'px;" class="kalturaHand" onclick="Kaltura.activatePlayer(\''.$thumbnailDivId.'\',\''.$divId.'\');">
 					<img src="' . $thumbnailPlaceHolderUrl . '" style="" />
 				</div>
-				<div id="' . $divId . '" style="height: '.$height.'px"">'.$link.'</div>
-				<script type="text/javascript">
-					jQuery("#'.$divId.'").hide();
-					var kaltura_swf = new SWFObject("' . $embedOptions["swfUrl"] . '", "' . $playerId . '", "' . $width . '", "' . $height . '", "9", "#000000");
-					kaltura_swf.addParam("wmode", "opaque");
-					kaltura_swf.addParam("flashVars", "' . $embedOptions["flashVars"] . '");
-					kaltura_swf.addParam("allowScriptAccess", "always");
-					kaltura_swf.addParam("allowFullScreen", "true");
-					kaltura_swf.addParam("allowNetworking", "all");
-					kaltura_swf.write("' . $divId . '");
-				</script>
+				<div id="' . $divId . '" style="display:none;height: '.$height.'px;"">
+					<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="' . $embedOptions["height"] . '" width="' . $embedOptions["width"] . '" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="' . $embedOptions["swfUrl"] . '" data="' . $embedOptions["swfUrl"] . '">
+					<param name="allowFullScreen" value="true" />
+					<param name="allowNetworking" value="all" />
+					<param name="allowScriptAccess" value="always" />
+					<param name="bgcolor" value="#000000" />
+					<param name="flashVars" value="&" />
+					<param name="movie" value="' . $embedOptions["swfUrl"] . '" />
+					<a rel="media:thumbnail" href="' . $thumbnailPlaceHolderUrl . '" />
+					<span property="dc:description" content="KalturaCE Media Entry" />
+					<span property="media:title" content="KalturaCE Media" />
+					<span property="media:width" content="' . $embedOptions["width"] . '" />
+					<span property="media:height" content="' . $embedOptions["height"] . '" />
+					<span property="media:type" content="application/x-shockwave-flash" />
+					</object>
+				</div>
 		';
 	}
 	else
 	{
 		$style = '';
 		$style .= 'width:' . $embedOptions["width"] .'px;';
-		$style .= 'height:' . ($embedOptions["height"] + 10) . 'px;'; // + 10 is for the powered by div
+		$style .= 'height:' . $embedOptions["height"] . 'px;';
 		if (@$embedOptions["align"])
 			$style .= 'float:' . $embedOptions["align"] . ';';
 			
@@ -2153,23 +2158,21 @@ function kaltura_shortcode($attrs)
 			$style .= $embedOptions["style"];
 			
 		$html = '
-				<span id="'.$divId.'" style="'.$style.'">'.$link.'</span>
-				<script type="text/javascript">
-					var kaltura_swf = new SWFObject("' . $embedOptions["swfUrl"] . '", "' . $playerId . '", "' . $embedOptions["width"] . '", "' . $embedOptions["height"] . '", "9", "#000000");
-					kaltura_swf.addParam("wmode", "opaque");
-					kaltura_swf.addParam("flashVars", "' . $embedOptions["flashVars"] . '");
-					kaltura_swf.addParam("allowScriptAccess", "always");
-					kaltura_swf.addParam("allowFullScreen", "true");
-					kaltura_swf.addParam("allowNetworking", "all");
-					kaltura_swf.write("' . $divId . '");
+				<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="' . $embedOptions["height"] . '" width="' . $embedOptions["width"] . '" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="' . $embedOptions["swfUrl"] . '" data="' . $embedOptions["swfUrl"] . '">
+				<param name="allowFullScreen" value="true" />
+				<param name="allowNetworking" value="all" />
+				<param name="allowScriptAccess" value="always" />
+				<param name="bgcolor" value="#000000" />
+				<param name="flashVars" value="&" />
+				<param name="movie" value="' . $embedOptions["swfUrl"] . '" />
+				<a rel="media:thumbnail" href="' . $embedOptions["thumbUrl"] . '" />
+				<span property="dc:description" content="KalturaCE Media Entry" />
+				<span property="media:title" content="KalturaCE Media" />
+				<span property="media:width" content="' . $embedOptions["width"] . '" />
+				<span property="media:height" content="' . $embedOptions["height"] . '" />
+				<span property="media:type" content="application/x-shockwave-flash" />
+				</object>
 				';
-		if (KalturaHelpers::compareWPVersion("2.6", ">=")) {
-			$html .= '
-					jQuery("#'.$divId.'").append("'.str_replace("\"", "\\\"", $powerdByBox).'"); 
-				';
-			//                                              ^ escape quotes for javascript ^
-		}
-		$html .= '</script>'; 
 	}
 		
 	return $html;
@@ -2315,7 +2318,9 @@ function _kaltura_get_embed_options($params)
 		$entryId = $params["entryid"];
 		$swfUrl .= "/entry_id/".$entryId;
 	}
-		
+	
+	$thumbUrl = KalturaHelpers::getThumbnailUrl(null,$entryId,"400","330");
+	
 	return array(
 		"flashVars" => $flashVarsStr,
 		"height" => $params["height"],
@@ -2324,7 +2329,8 @@ function _kaltura_get_embed_options($params)
 		"style" => @$params["style"],
 		"wid" => $wid,
 		"entryId" => $entryId,
-		"swfUrl" => $swfUrl
+		"swfUrl" => $swfUrl,
+		"thumbUrl" => $thumbUrl
 	);
 }
 
