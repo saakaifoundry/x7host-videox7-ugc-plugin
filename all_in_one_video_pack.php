@@ -260,67 +260,50 @@ function kaltura_the_comment($content)
 	return $content;
 }
 
-function kaltura_print_js($content) 
-{
-	$content[] = 'kaltura';
-	$content[] = 'jquery';
-	$content[] = 'swfobject-script';
-	$content[] = 'swfobject-script15';
-	$content[] = 'jquerytools';
-	$content[] = 'jqueryui-script';
-	$content[] = 'shadowbox-script';
-	$content[] = 'x7ugc-script';
-	$content[] = 'x7validator-script';
-	$content[] = 'x7datatables-script';
-	if (is_admin())
-		$content[] = 'kadmin';
-	KalturaHelpers::addWPVersionJS();
-	
-	return $content;
-}
-
 function kaltura_register_js() 
 {
 	$plugin_url = KalturaHelpers::getPluginUrl();
 	if ( is_admin() ) {
-		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version());
+		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kadmin' );
-		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
-		wp_enqueue_script( 'swfobject-script15' );
-		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+		//wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, false);
+		//wp_enqueue_script( 'swfobject-script15' );
+		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
+		wp_enqueue_script( 'swfobject-script' );
+		
+		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kaltura' );
 	}
 	if( !is_admin() ){
 		wp_deregister_script('jquery'); 
-		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4');
+		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4', false);
 		wp_enqueue_script( 'jquery' );
-		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version());
+		
+		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kaltura' );
 	//register swfobject for flash embedding
-		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, true);
+		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
 		wp_enqueue_script( 'swfobject-script' );
-		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
-		wp_enqueue_script( 'swfobject-script15' );
-	//unregister WP's jquery and jquery-ui and register newest jquery
-		//wp_deregister_script('jquery');
-
+		
+		//wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, true);
+		//wp_enqueue_script( 'swfobject-script15' );
 	//includes jquery tools ui
-		wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, true);
+		wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, false);
 		wp_enqueue_script( 'jquerytools' );
 	//register newest jquery ui
-		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', false, false, true);
+		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', false, false, false);
 		wp_enqueue_script( 'jqueryui-script' );
 	//register shadowbox
-		wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, true);
+		wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, false);
 		wp_enqueue_script( 'shadowbox-script' );
 	//register custom x7js
-		wp_register_script('x7ugc-script', $plugin_url . '/js/x7js.js', false, false, true);
+		wp_register_script('x7ugc-script', $plugin_url . '/js/x7js.js', false, false, false);
 		wp_enqueue_script( 'x7ugc-script' );
 	//register form validator
-		wp_register_script('x7validator-script', $plugin_url . '/js/validator.js', false, false, true);
+		wp_register_script('x7validator-script', $plugin_url . '/js/validator.js', false, false, false);
 		wp_enqueue_script( 'x7validator-script' );
 	//register datatables
-		wp_register_script('x7datatables-script', $plugin_url . '/js/jquery.dataTables.min.js', false, false, true);
+		wp_register_script('x7datatables-script', $plugin_url . '/js/jquery.dataTables.min.js', false, false, false);
 		wp_enqueue_script( 'x7datatables-script' );
 	}
 }
@@ -342,6 +325,11 @@ function kaltura_head()
 {
 	$plugin_url = KalturaHelpers::getPluginUrl();
 	echo('<link rel="stylesheet" href="' . $plugin_url . '/css/kaltura.css?v'.kaltura_get_version().'" type="text/css" />');
+	if (get_option('x7html5enabled') == 1) {
+		$html5server = get_option('x7server');
+		echo('<script type="text/javascript" src="http://html5.kaltura.org/js"></script>');
+		echo("<script type='text/javascript'>mw.setConfig( 'Kaltura.ServiceUrl' , '$html5server' );mw.setConfig( 'Kaltura.CdnUrl' , '$html5server' );mw.setConfig('EmbedPlayer.kalturaAttribution', false );mw.setConfig( 'EmbedPlayer.NativeControlsMobileSafari', false );</script>");
+	}
 }
 
 function kaltura_footer() 
@@ -521,29 +509,6 @@ function rest_helper($url, $params = null, $verb = 'POST', $format = 'xml')
   return $res;
 }
 
-// create custom plugin settings menu
-//add_action('admin_menu', 'x7_create_menu');
-/* NOT NEEDED ANYMORE, INCLUDED IN ALL IN ONE SETTINGS PAGE
-function x7_create_menu() {
-
-	//create new top-level menu
-	add_menu_page('x7Host Videox7 UGC Plugin Settings', 'x7 UGC Settings', 'administrator', __FILE__, 'x7_settings_page',plugins_url('/images/icon.png', __FILE__));
-
-	//call register settings function
-	add_action( 'admin_init', 'register_mysettings' );
-}
-
-function register_mysettings() {
-	//register our settings
-	register_setting( 'x7-settings-group', 'x7uiconfid' );
-	register_setting( 'x7-settings-group', 'x7pluiconfid' );
-	register_setting( 'x7-settings-group', 'x7adminuiconfid' );
-	register_setting( 'x7-settings-group', 'x7kcwuiconfid' );
-	register_setting( 'x7-settings-group', 'x7allowposts' );
-	register_setting( 'x7-settings-group', 'x7allowstandard' );
-	register_setting( 'x7-settings-group', 'x7allowadvanced' );
-}
-*/
 function x7video_shortcode($atts)
 {
    extract( shortcode_atts( array(
@@ -1029,6 +994,7 @@ DELETE_JS;
 				</ul>
 				<div id="x7form-1">
 				<img id="x7imgchange" src=""><br />
+
 				<button onClick="x7VidPlay()" id="x7aplaychange" title="">[PLAY]</button><br />
 X7POSTFORM;
 			if ($x7allowstandard) {
@@ -1473,160 +1439,6 @@ DRAFTS;
 			} // end if drafts
 		} //end if widget is user posts
 /***********************************************************************************************************************
- * OLD! MAKE PLAYLIST WIDGET SHORTCODE *
- * ********************************************************************************************************************/
-if ($widget=="makeplaylistold"){
-		//Start Kaltura admin session
-		$kmodel = KalturaModel::getInstance();
-		$ks = $kmodel->getAdminSession("","$user_login");
-		if (!$ks)
-			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
-		$ksget = urlencode($ks);
-		
-		//add javascript and info box TODO - pull out all CSS and put into external file
-		$return .= <<<INFOBOX
-		
-		<script type="text/javascript">
-		
-		//list users created playlists
-		jQuery(document).ready(function() {
-		//jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
-		jQuery("#vidlist, #playlist").sortable({
-			connectWith: '.connectedSortable',
-			revert: 'true',
-			tolerance: 'pointer',
-			placeholder: 'ui-state-highlight'
-		}).disableSelection();
-		jQuery(".draggable").draggable({
-			cursor: 'crosshair',
-			cursorAt: { top: 50, left: 50 },
-			opacity: '0.6',
-			containment: '#x7wrapdiv',
-			revert: 'valid',
-			revertDuration: '1000',
-		});
-		jQuery("#listname").val("Playlist Name Here");
-	    });//end document ready
-		
-		function x7ListPreview()
-		{
-			var valError = "noerror";
-			arrEids = []; //clear out the eids array
-			var listname;
-			jQuery("#playlist li").each(
-				function( intindex ){
-					arrEids[intindex] = jQuery( this ).attr("eid");
-				});
-			if (arrEids.length < 2)
-			{
-				valError = "error";
-				alert("New playlists must contain at least two videos!");
-			}
-			listname = jQuery("#listname").val(); //get entered listname text
-			if (listname.length < 5)
-			{
-				valError = "error";
-				alert("Playlist name must contain at least five characters!");
-			}
-			if (valError != "error")
-			{
-				jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
-				jQuery.post(
-					"$pluginurl/x7listadd.php",
-					{'x7server': "$x7server", 'x7kalpartnerid': "$x7kalpartnerid", 'ks': "$ks", 'eids[]': arrEids, 'listname': listname, 'ul': "$user_login", 'x7bloghome': "$x7bloghome"},
-					function ( data ){
-						jQuery("#x7loading").html('');
-						if (data != "error"){
-							var theUrl;
-							theUrl = "$plugin_url/x7listplayer.php";
-							Shadowbox.open({
-							content:    theUrl + "?listid=" + data + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
-							player:     "iframe",
-							height:     400,
-							width:      800
-							});
-						} else {
-							alert("Error creating playlist.");
-						}; //end if not server data returned error
-					}); //end post
-	    };//end if not valerror error
-		}//end x7listpreview
-		
-		</script>
-		<div class="ui-widget">
-      <div class="ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
-	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-	    <strong>Quick tip:  </strong>This page lets you make playlists only from videos and mixes that you yourself have uploaded and made.</p>
-      </div>
-		</div>
-		<br>
-		<br>
-		<div id="wrapdiv" style="width:500px;margin-left:auto;margin-right:auto;">
-		<div id="vidlistdiv" style="height:1000px">
-			<h3>Your Movies</h3>
-			<ul id="vidlist" class="connectedSortable">
-INFOBOX;
-		$mediaresult = rest_helper("$x7server/api_v3/?service=media&action=list",
-					 array(
-						'ks' => $ks,
-						'filter:userIdEqual' => $user_login,
-						'filter:orderBy' => '-createdAt'
-					 ), 'POST'
-					 );
-		foreach ($mediaresult->result->objects->item as $mediaentry) {
-			$eid = $mediaentry->id;
-			$thumb = $mediaentry->thumbnailUrl;
-			$userId = $mediaentry->userId;
-			$name = $mediaentry->name;
-			$description = $mediaentry->description;
-			$duration = $mediaentry ->duration;
-			$return .= <<<ENTRY_DIV
-				<li class="ui-state-default" eid="$eid">
-				<img style="padding-top:10px" eid="$eid" title="Media - $name, $duration seconds" src="$thumb">
-				</li>
-ENTRY_DIV;
-		} //end foreach
-		$mixresult = rest_helper("$x7server/api_v3/?service=mixing&action=list",
-					 array(
-						'ks' => $ks,
-						'filter:userIdEqual' => $user_login,
-						'filter:orderBy' => '-createdAt'
-					 ), 'POST'
-					 );
-		foreach ($mixresult->result->objects->item as $mixentry) {
-			$eid = $mixentry->id;
-			$thumb = $mixentry->thumbnailUrl;
-			$userId = $mixentry->userId;
-			$name = $mixentry->name;
-			$description = $mixentry->description;
-			$duration = $mixentry ->duration;
-			$return .= <<<ENTRY_DIV2
-				<li class="ui-state-default" eid="$eid">
-				<img style="padding-top:10px" eid="$eid" title="Mix - $name, $duration seconds" src="$thumb">
-				</li>
-ENTRY_DIV2;
-		} //end foreach
-		$return .= <<<INFOBOX2
-		
-			</ul>
-		</div>
-		<div id="betweendiv">
-			<div id="x7loading"></div>
-			DRAG==><br>AND<br>
-			<==DROP!
-		</div>
-		<div id="playlistdiv">
-			<h3>New Playlist</h3>
-			<a onclick="x7ListPreview()">[Save and Preview]</a><br />
-			<textarea id="listname"></textarea>
-			<ul id="playlist" class="connectedSortable">
-			</ul>
-		</div>
-		</div>
-INFOBOX2;
-		
-	} // end if widget is makeplaylist
-/***********************************************************************************************************************
  * MAKE PLAYLIST WIDGET SHORTCODE *
  * ********************************************************************************************************************/
 if ($widget=="makeplaylist"){
@@ -1638,6 +1450,12 @@ if ($widget=="makeplaylist"){
 		$ksget = urlencode($ks);
 		//get media
 		$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, $show, $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
+		
+		$player = $kmodel->getPlayerUiConf($x7pluiconfid);
+	
+		//player vars
+		$player_width = $player->width;
+		$player_height = $player->height;
 		
 		//add javascript and info box
 		$return .= <<<INFOBOX
@@ -1720,7 +1538,7 @@ if ($widget=="makeplaylist"){
 		jQuery("#playlist, #vidlist").sortable({
 			start: function (e, ui) { 
 				// modify ui.placeholder however you like
-				ui.placeholder.html("<span class='x7placeholder'></span>");
+				ui.placeholder.html("<img src='$pluginurl/images/x7placeholder.png' />");
 				},
 			connectWith: '.connectedSortable',
 			forcePlaceholderSize: 'true',
@@ -1730,6 +1548,12 @@ if ($widget=="makeplaylist"){
 		}).disableSelection();
 
 		jQuery("#listname").val("Playlist Name Here");
+		
+		jQuery("div.scroll-content-item>img[title]").tooltip({
+					position: 'bottom center',
+					effect: 'slide'
+				});
+				
 	    });//end document ready
 		
 		function x7ListPreview()
@@ -1737,7 +1561,7 @@ if ($widget=="makeplaylist"){
 			var valError = "noerror";
 			arrEids = []; //clear out the eids array
 			var listname;
-			jQuery("#playlist li").each(
+			jQuery("#playlist div").each(
 				function( intindex ){
 					arrEids[intindex] = jQuery( this ).attr("eid");
 				});
@@ -1747,10 +1571,10 @@ if ($widget=="makeplaylist"){
 				alert("New playlists must contain at least two videos!");
 			}
 			listname = jQuery("#listname").val(); //get entered listname text
-			if (listname.length < 5)
+			if (listname.length < 3)
 			{
 				valError = "error";
-				alert("Playlist name must contain at least five characters!");
+				alert("Playlist name must contain at least three characters.");
 			}
 			if (valError != "error")
 			{
@@ -1762,12 +1586,12 @@ if ($widget=="makeplaylist"){
 						jQuery("#x7loading").html('');
 						if (data != "error"){
 							var theUrl;
-							theUrl = "$plugin_url/x7listplayer.php";
+							theUrl = "$pluginurl/x7listplayer.php";
 							Shadowbox.open({
-							content:    theUrl + "?listid=" + data + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
+							content:    theUrl + "?listid=" + data + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid&width=$player_width&height=$player_height",
 							player:     "iframe",
-							height:     400,
-							width:      800
+							height:     "$player_height",
+							width:      "$player_width"
 							});
 						} else {
 							alert("Error creating playlist.");
@@ -1777,14 +1601,7 @@ if ($widget=="makeplaylist"){
 		}//end x7listpreview
 		
 		</script>
-		<div class="ui-widget">
-      <div class="ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
-	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-	    <strong>Quick tip:  </strong>This page lets you make playlists only from videos and mixes that you yourself have uploaded and made.</p>
-      </div>
-		</div>
-		<br>
-		<br>
+		<h3>Media List - Drag Entries Below To Create New Playlist</h3>
 		<div class="scroll-pane ui-widget ui-widget-header ui-corner-all">
 			<ul id="vidlist" class="scroll-content connectedSortable">
 INFOBOX;
@@ -1797,7 +1614,7 @@ INFOBOX;
 					$submitter = $mediaEntry->userId;
 					$description = $mediaEntry->description;
 					$description = str_replace("'", "", "$description"); 
-					$return .= "<div class='scroll-content-item ui-widget-header'><img height='90' width='120' src='$thumbUrl' /></div>";
+					$return .= "<div eid='$id' class='scroll-content-item ui-widget-header'><img title='<strong>Name</strong>: $name<br /><strong>Author</strong>: $submitter' height='90' width='120' src='$thumbUrl' /></div>";
 				}
 		
 		$return .= <<<INFOBOX3
@@ -1825,6 +1642,12 @@ if ($widget=="userplaylists"){
 		if (!$ks)
 			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
 		$ksget = urlencode($ks);
+		
+		$player = $kmodel->getPlayerUiConf($x7pluiconfid);
+	
+		//player vars
+		$player_width = $player->width;
+		$player_height = $player->height;
 		
 		//SET RPCURL XMLRPC FILE VALUE
 		$x7rpcurl = $x7bloghome . "/xmlrpc.php";
@@ -1925,7 +1748,7 @@ if ($widget=="userplaylists"){
 			if (postout == 'false'){
 					formValidate();
 					var thumburl = '$pluginurl/images/playlist.png';
-					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="680" width="400" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" data="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="playlistAPI.autoInsert=true&playlistAPI.kpl0Name='+eid+'&playlistAPI.kpl0Url=$x7serverget%2Findex.php%2Fpartnerservices2%2Fexecuteplaylist%3Fuid%3D%26partner_id%3D$x7kalpartnerid%26subp_id%3D$x7kalsubpartnerid%26format%3D8%26ks%3D%7Bks%7D%26playlist_id%3D'+eid+'&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" /></object>';
+					var embedcode = '<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="$player_height" width="$player_width" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" data="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="playlistAPI.autoInsert=true&playlistAPI.kpl0Name='+eid+'&playlistAPI.kpl0Url=$x7serverget%2Findex.php%2Fpartnerservices2%2Fexecuteplaylist%3Fuid%3D%26partner_id%3D$x7kalpartnerid%26subp_id%3D$x7kalsubpartnerid%26format%3D8%26ks%3D%7Bks%7D%26playlist_id%3D'+eid+'&" /><param name="movie" value="$x7server/index.php/kwidget/cache_st/1293071951/wid/_$x7kalpartnerid/uiconf_id/$x7pluiconfid" /></object>';
 					
 					jQuery('button#x7aplaychange').attr("title",eid);
 					jQuery('button#x7aeditchange').attr("title",eid);
@@ -1978,10 +1801,10 @@ if ($widget=="userplaylists"){
 				var theUrl;
 				theUrl = "$pluginurl/x7listplayer.php";
 			    Shadowbox.open({
-			    content:    theUrl + "?listid=" + eid + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid",
+			    content:    theUrl + "?listid=" + eid + "&x7kalpartnerid=$x7kalpartnerid&x7serverget=$x7serverget&x7pluiconfid=$x7pluiconfid&height=$player_height&width=$player_width",
 			    player:     "iframe",
-			    height:     330,
-			    width:      740
+			    height:     "$player_height",
+			    width:      "$player_width"
 			    });
 			}
 			
@@ -1991,10 +1814,10 @@ if ($widget=="userplaylists"){
 				var name = jQuery("button#x7aeditchange").attr("name");
 				var theUrl = "$pluginurl/x7pledit.php";
 				Shadowbox.open({
-					content: theUrl + "?ks=$ksget&x7bloghomeget=$x7bloghomeget&x7server=$x7serverget&x7kalpartnerid=$x7kalpartnerid&pluginurl=$pluginurlget&eid="+eid+"&listname="+name,
+					content: theUrl + "?ks=$ksget&userlogin=$user_login&x7bloghomeget=$x7bloghomeget&x7server=$x7serverget&x7kalpartnerid=$x7kalpartnerid&pluginurl=$pluginurlget&eid="+eid+"&listname="+name,
 					player: "iframe",
-					height: 700,
-					width: 400
+					height: 800,
+					width: 800
 				});
 			}//end x7videdit
 			</script>

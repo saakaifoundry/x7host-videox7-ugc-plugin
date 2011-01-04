@@ -40,7 +40,7 @@ $flashVars["jsDelegate"] 	= "callbacksObj";
 	<title>x7 Standard Editor</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="<?php echo($pluginurl); ?>/all-in-one-video-pack/js/shadowbox.js"></script>
+<script type="text/javascript" src="<?php echo($pluginurl); ?>/js/shadowbox.js"></script>
 	<script type="text/javascript">
 		var callbacksObj = {
 			publishHandler:publishHandler,
@@ -57,7 +57,7 @@ $flashVars["jsDelegate"] 	= "callbacksObj";
 			parent.Shadowbox.close();
 		}
 		function openKCWHandler() {
-			window.alert("Remember - Editor uploads are not treated as separate videos entries!");
+			window.alert("Remember - Editor uploads are not treated as separate video entries!");
 		}
 		function kalHandler() {
 			window.alert("We make use of Kaltura open source video solutions, Kaltura Dot Org");

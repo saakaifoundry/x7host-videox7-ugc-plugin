@@ -23,7 +23,11 @@
 #vidlist { list-style-type: none; margin: 0px; padding: 0px; }
 #playlist { height:110px; list-style-type: none; margin: 0px; padding: 0px; border: dashed; border-width: thin; }
 
-.x7placeholder { height: 110px; width: 120px; }
+.x7placeholder {
+    height: 90px;
+    width: 120px;
+    background: transparent url("../images/x7placeholder.png");
+    }
 .connectedSortable>div { float: left; }
 
 textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }

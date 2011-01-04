@@ -1,57 +1,10 @@
 <?php
-
-//PHP REST helper function that does not use CURL
-function rest_helper($url, $params = null, $verb = 'POST', $format = 'xml')
-{
-  $cparams = array(
-    'http' => array(
-      'method' => $verb,
-      'ignore_errors' => true
-    )
-  );
-  if ($params !== null) {
-    $params = http_build_query($params);
-    if ($verb == 'POST') {
-      $cparams['http']['content'] = $params;
-    } else {
-      $url .= '?' . $params;
-    }
-  }
-
-  $context = stream_context_create($cparams);
-  $fp = fopen($url, 'rb', false, $context);
-  if (!$fp) {
-    $res = false;
-  } else {
-    // If you're trying to troubleshoot problems, try uncommenting the
-    // next two lines; it will show you the HTTP response headers across
-    // all the redirects:
-    // $meta = stream_get_meta_data($fp);
-    // var_dump($meta['wrapper_data']);
-    $res = stream_get_contents($fp);
-  }
-
-  if ($res === false) {
-    throw new Exception("$verb $url failed: $php_errormsg");
-  }
-
-  switch ($format) {
-    case 'json':
-      $r = json_decode($res);
-      if ($r === null) {
-        throw new Exception("failed to decode $res as json");
-      }
-      return $r;
-
-    case 'xml':
-      $r = simplexml_load_string($res);
-      if ($r === null) {
-        throw new Exception("failed to decode $res as xml");
-      }
-      return $r;
-  }
-  return $res;
-}
+define('WP_USE_THEMES', false);
+require('../../../wp-load.php');
+include_once('settings.php');
+include_once('lib/kaltura_client.php');
+include_once('lib/kaltura_helpers.php');
+include_once('lib/kaltura_model.php');
 
 $ks = $_GET['ks'];
 $ks = urldecode($ks);
@@ -64,9 +17,19 @@ $listname = $_GET['listname'];
 $x7kalpartnerid = $_GET['x7kalpartnerid'];
 $x7kalsubpartnerid = $x7kalpartnerid . "00";
 $x7bloghome = urldecode($_GET['x7bloghomeget']);
+$user_login = $_GET['userlogin'];
 
 if ( eregi ( "$x7bloghome", $_SERVER['HTTP_REFERER'] ) )
 {
+//Start Kaltura admin session
+		$kmodel = KalturaModel::getInstance();
+		$ks = $kmodel->getAdminSession("","$user_login");
+		if (!$ks)
+			wp_die(__('Failed to start new session.<br/><br/>'.$closeLink));
+
+		//get media
+		$list = $kmodel->listAllEntriesByPagerandFilter($x7kalpartnerid, 'all', $namelike, $user, $tags, $admintags, $category, $pagesize, $pageindex);
+
     //get list of entries for editing current playlist
 $plentryresult = rest_helper("$x7server/api_v3/?service=playlist&action=get",
 					 array(
@@ -90,34 +53,100 @@ $plentryresult = rest_helper("$x7server/api_v3/?service=playlist&action=get",
 <script type='text/javascript' src='<?php echo($pluginurl); ?>/js/shadowbox.js?ver=3.0.1'></script>
 <script type='text/javascript' src='<?php echo($pluginurl); ?>/js/x7js.js?ver=3.0.1'></script>
 <script type='text/javascript' src='<?php echo($pluginurl); ?>/js/validator.js?ver=3.0.1'></script>
-<style type="text/css">
-    #sortable, #trash { list-style-type: none; margin: 0; padding: 0; width: 100px; }
-    #sortable li, #trash li { margin: 0 5px 5px 5px; padding: 5px; width: 90px; height: 60px; }
-    html>body #sortable li { height: 61px; line-height: 1.2em; }
-    html>body #trash li { height: 91px; line-height: 1.2em; }
-    .ui-state-highlight { height: 1.5em; line-height: 1.2em; }
-    textarea#listname { width: 160px; height: 20px; border: 3px solid #cccccc; padding: 5px; font-family: Tahoma, sans-serif; }
-    html>body { background-color: white; }
-    #sb-loading-inner { display: none; }
-</style>
+<link rel='stylesheet' href='<?php echo($pluginurl); ?>/css/jqueryui/jquery-ui-1.8.7.custom.css' type='text/css' media='all' />
+<link rel='stylesheet' href='<?php echo($pluginurl); ?>/css/sbox/shadowbox.css' type='text/css' media='all' />
+<link rel='stylesheet' href='<?php echo($pluginurl); ?>/css/x7style.css' type='text/css' media='all' />
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
-    	//make playlist entries sortable
-	jQuery("#sortable").sortable({
-	    placeholder: 'ui-state-highlight'
-	});
-	jQuery("#sortable").disableSelection();		
-	jQuery("#droppable").droppable({
-	    activeClass: 'ui-state-hover',
-	    hoverClass: 'ui-state-active',
-	    drop: function(event, ui) {
-		var eid = ui.draggable.attr("eid");
-		jQuery("#sortable li[eid="+ eid +"]").hide('slow');
-		jQuery("#sortable li[eid="+ eid +"]").remove();
-	    }
-	});
-    }); //end document ready
+		//scrollpane parts
+		var scrollPane = jQuery( ".scroll-pane" ),
+			scrollContent = jQuery( ".scroll-content" );
+		
+		//build slider
+		var scrollbar = jQuery( ".scroll-bar" ).slider({
+			slide: function( event, ui ) {
+				if ( scrollContent.width() > scrollPane.width() ) {
+					scrollContent.css( "margin-left", Math.round(
+						ui.value / 100 * ( scrollPane.width() - scrollContent.width() )
+					) + "px" );
+				} else {
+					scrollContent.css( "margin-left", 0 );
+				}
+			}
+		});
+		
+		//append icon to handle
+		var handleHelper = scrollbar.find( ".ui-slider-handle" )
+		.mousedown(function() {
+			scrollbar.width( handleHelper.width() );
+		})
+		.mouseup(function() {
+			scrollbar.width( "100%" );
+		})
+		.append( "<span class='ui-icon ui-icon-grip-dotted-vertical'></span>" )
+		.wrap( "<div class='ui-handle-helper-parent'></div>" ).parent();
+		
+		//change overflow to hidden now that slider handles the scrolling
+		scrollPane.css( "overflow", "hidden" );
+		
+		//size scrollbar and handle proportionally to scroll distance
+		function sizeScrollbar() {
+			var remainder = scrollContent.width() - scrollPane.width();
+			var proportion = remainder / scrollContent.width();
+			var handleSize = scrollPane.width() - ( proportion * scrollPane.width() );
+			scrollbar.find( ".ui-slider-handle" ).css({
+				width: handleSize,
+				"margin-left": -handleSize / 2
+			});
+			handleHelper.width( "" ).width( scrollbar.width() - handleSize );
+		}
+		
+		//reset slider value based on scroll content position
+		function resetValue() {
+			var remainder = scrollPane.width() - scrollContent.width();
+			var leftVal = scrollContent.css( "margin-left" ) === "auto" ? 0 :
+				parseInt( scrollContent.css( "margin-left" ) );
+			var percentage = Math.round( leftVal / remainder * 100 );
+			scrollbar.slider( "value", percentage );
+		}
+		
+		//if the slider is 100% and window gets larger, reveal content
+		function reflowContent() {
+				var showing = scrollContent.width() + parseInt( scrollContent.css( "margin-left" ), 10 );
+				var gap = scrollPane.width() - showing;
+				if ( gap > 0 ) {
+					scrollContent.css( "margin-left", parseInt( scrollContent.css( "margin-left" ), 10 ) + gap );
+				}
+		}
+		
+		//change handle position on window resize
+		jQuery( window ).resize(function() {
+			resetValue();
+			sizeScrollbar();
+			reflowContent();
+		});
+		//init scrollbar size
+		setTimeout( sizeScrollbar, 10 );//safari wants a timeout
+		
+		jQuery("#playlist, #vidlist").sortable({
+			start: function (e, ui) { 
+				// modify ui.placeholder however you like
+				ui.placeholder.html("<img src='<?php echo($pluginurl); ?>/images/x7placeholder.png' />");
+				},
+			connectWith: '.connectedSortable',
+			forcePlaceholderSize: 'true',
+			revert: 'true',
+			tolerance: 'pointer',
+			placeholder: 'ui-state-highlight'
+		}).disableSelection();
+		
+		jQuery("div.scroll-content-item>img[title]").tooltip({
+					position: 'bottom center',
+					effect: 'slide'
+				});
+				
+	    });//end document ready
     
     function formValidate()
     {
@@ -135,7 +164,7 @@ $plentryresult = rest_helper("$x7server/api_v3/?service=playlist&action=get",
 	    var valError = "noerror";
 	    arrEids = []; //clear out the eids array
 	    var listname;
-	    jQuery("#sortable li").each(
+	    jQuery("#playlist div").each(
 		  function( intindex ){
 			arrEids[intindex] = jQuery( this ).attr("eid");
 		  });
@@ -180,25 +209,40 @@ $plentryresult = rest_helper("$x7server/api_v3/?service=playlist&action=get",
 	}
 </script>
 </head>
-        <body>
-	    <div id="x7wrapdiv" style="width:500px;margin-left:60px;margin-top:30px;" class="ui-helper-clearfix">
-                <div id="playlistdiv">
-                    <strong>Playlist ID: <span id="plid"><?php echo($eid) ?></span><br>
-                    <strong>Playlist name:  </strong><textarea id="listname"><?php echo($listname) ?></textarea><br><br>
-                    <a onclick="x7ListPreview()" id="preview"><strong>[SAVE AND PREVIEW]</strong></a>  <a onclick="x7EditClose()">[CANCEL]</a><br><br>
-                    <ul id="trash">
-                        <li id="droppable" style="background-color: #F2D285"><strong>Drop an item here to remove.</strong></li>
-                    </ul>
-                    <ul id="sortable">
-                        <?php
+        <body style="background-color: white; margin: 10px;">
+	  <h3>Media List</h3>
+<div class="scroll-pane ui-widget ui-widget-header ui-corner-all">
+			<ul id="vidlist" class="scroll-content connectedSortable">
+<?php
+				$itemcount = "0";
+				foreach ($list->objects as $mediaEntry) {
+					$itemcount++;
+					$name     = $mediaEntry->name; // get the entry name
+					$id       = $mediaEntry->id;
+					$thumbUrl = $mediaEntry->thumbnailUrl;  // get the entry thumbnail URL
+					$submitter = $mediaEntry->userId;
+					$description = $mediaEntry->description;
+					$description = str_replace("'", "", "$description"); 
+					echo "<div eid='$id' class='scroll-content-item ui-widget-header'><img title='<strong>Name</strong>: $name<br /><strong>Author</strong>: $submitter' height='90' width='120' src='$thumbUrl' /></div>";
+				}
+?>
+			</ul>
+		<div class="scroll-bar-wrap ui-widget-content ui-corner-bottom">
+		<div class="scroll-bar"></div>
+		</div>
+		</div>
+			<h3>Your Playlist</h3>
+			  <strong>Playlist ID: <span id="plid"><?php echo($eid) ?></span><br>
+			  <strong>Playlist name:  </strong><textarea id="listname"><?php echo($listname) ?></textarea><br><br>
+			  <a onclick="x7ListPreview()" id="preview"><strong>[SAVE AND PREVIEW]</strong></a>  <a onclick="x7EditClose()">[CANCEL]</a><br><br>
+			<ul id="playlist" class="connectedSortable">
+			  <?php
                             $content = (string) $plentryresult->result->playlistContent;
                             $plids = explode(",", $content);
                             foreach ($plids as $plid){
-				echo "<li class='ui-state-default' eid='$plid'><img title='Drag me!' src='$x7server/p/$x7kalpartnerid/sp/$x7kalsubpartnerid/thumbnail/entry_id/$plid/width/90/height/60'/></li>";
+				echo "<div class='scroll-content-item ui-widget-header' eid='$plid'><img title='Drag me!' src='$x7server/p/$x7kalpartnerid/sp/$x7kalsubpartnerid/thumbnail/entry_id/$plid/width/90/height/120'/></div>";
                             } // end foreach
-                        ?>
-                    </ul>
-                </div>
-            </div>
+			  ?>
+			</ul>
         </body>
 </html>

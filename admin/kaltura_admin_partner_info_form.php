@@ -16,6 +16,7 @@
 		$allow_posts = @$_POST["allow_posts"] ? true : false;
 		$allow_standard = @$_POST["allow_standard"] ? true : false;
 		$allow_advanced = @$_POST["allow_advanced"] ? true : false;
+		$enable_html5 = @$_POST["enable_html5"] ? true : false;
 		
 		update_option("kaltura_permissions_add", $permissions_add);
 		update_option("kaltura_permissions_edit", $permissions_edit);
@@ -157,7 +158,7 @@
 			<tr valign="top">
 				<td><?php _e("Enable HTML5 Javascript Library?"); ?></td>
 				<td>
-					<input type="checkbox" id="enable_html5" name="enable_html5" <?php echo @get_option("enable_html5") ? "checked=\"checked\"" : ""; ?> />
+					<input type="checkbox" id="enable_html5" name="enable_html5" <?php echo @get_option("x7html5enabled") ? "checked=\"checked\"" : ""; ?> />
 					<br />
 				</td>
 			</tr>

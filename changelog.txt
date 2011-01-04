@@ -1,3 +1,11 @@
+Version 2.5.3
+-------------
+* Tons of bug fixes - everyone should update
+* More style improvements
+* Style easily changeable via jQuery UI Themeroller
+* Scroll gallery widget added!
+* HTML5 enabled with one click! View media on iPad, iPhone, other mobile devices! Requires mobile transcoded flavors.
+
 Version 2.5.2
 -------------
 * Tons of bug fixes - including admin dash JS fix!  Please update!
