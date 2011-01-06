@@ -4,7 +4,7 @@ Donate link: http://www.kalturecehost.com/
 Tags: plugin, admin, images, html5, mobile, user, generated, content, x7host, videox7, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
 Tested up to: 3.0.4
-Stable tag: 2.5.3
+Stable tag: 2.5.3.1
 
 You, your logged in Wordpress users, and your blog visitors get cutting edge online video capabilities.  Webcam comments, collaborative editing, and more!
 
@@ -20,11 +20,11 @@ Highlights:
 
 * Give your logged in Wordpress users the ability to upload/edit/remix/share/post their media on your blog!  This is true user generated content!
 * Upload, record from webcam and import all rich-media directly to your blog post; 
-* Edit and remix videos using Kaltura's online full-featured video editor; 
+* Edit and remix videos using Kaltura's online full-featured standard (storyboard) and advanced (timeline based) editors; 
 * Easily import all rich media (video, audio, pictures...) from other sites and social networks, such as Flickr, CCMixter, Jamendo, New York Public Library, any URL on the web etc.; 
 * Allow readers and subscribers to add video and audio comments, and to participate in collaborative videos; 
 * Manage and track interactive videos through the management console; 
-* Enable video advertising
+* Enable video advertising (requires additional configuration)
 * Sidebar widget displaying thumbnails of recent videos and video comments
 * Complete administrative capabilities. You decide who can add and edit each video; 
 * Supports more than 150 video, audio and image file formats and codecs 
@@ -36,13 +36,9 @@ Highlights:
 * Easy installation that takes just 4 steps and a few minutes. 
 
 
-Version 2.5.3
+Version 2.5.3.1
 -------------
-* Tons of bug fixes - everyone should update
-* More style improvements
-* Style easily changeable via jQuery UI Themeroller
-* Scroll gallery widget added!
-* HTML5 enabled! View media on iPad, iPhone, other mobile devices!
+* Fixed video library bug - recommend everyone upgrade
 
 Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://www.kalturacehost.com
 
@@ -61,6 +57,7 @@ If you are upgrading your current version of the plugin, or if you're upgrading 
 1. Deactivate and uninstall the plugin through the 'Plugins' menu in the WordPress admin application
 2. Download the latest version
 3. Follow the installation steps above
+4. If plugin is not functioning correctly, you may need to manually remove all wp_options database table entries beginning with "x7" and "kaltura_" before re-installing!
 
 Installing the Recent Videos Sidebar Widget
 
