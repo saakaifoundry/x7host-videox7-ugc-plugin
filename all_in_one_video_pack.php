@@ -266,10 +266,10 @@ function kaltura_register_js()
 	if ( is_admin() ) {
 		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kadmin' );
-		//wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, false);
-		//wp_enqueue_script( 'swfobject-script15' );
-		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
-		wp_enqueue_script( 'swfobject-script' );
+		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, false);
+		wp_enqueue_script( 'swfobject-script15' );
+		//wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
+		//wp_enqueue_script( 'swfobject-script' );
 		
 		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kaltura' );
@@ -325,8 +325,9 @@ function kaltura_head()
 {
 	$plugin_url = KalturaHelpers::getPluginUrl();
 	echo('<link rel="stylesheet" href="' . $plugin_url . '/css/kaltura.css?v'.kaltura_get_version().'" type="text/css" />');
+	echo("<script type='text/javascript'>var Kaltura_PluginUrl = '$plugin_url';</script>");
 	if (get_option('x7html5enabled') == 1) {
-		$html5server = get_option('x7server');
+		$html5server = KALTURA_SERVER_URL;
 		echo('<script type="text/javascript" src="http://html5.kaltura.org/js"></script>');
 		echo("<script type='text/javascript'>mw.setConfig( 'Kaltura.ServiceUrl' , '$html5server' );mw.setConfig( 'Kaltura.CdnUrl' , '$html5server' );mw.setConfig('EmbedPlayer.kalturaAttribution', false );mw.setConfig( 'EmbedPlayer.NativeControlsMobileSafari', false );</script>");
 	}
@@ -363,6 +364,7 @@ function kaltura_add_admin_css($content)
 {
 	$plugin_url = KalturaHelpers::getPluginUrl();
 	$content .= '<link rel="stylesheet" href="' . $plugin_url . '/css/kaltura.css?v'.kaltura_get_version().'" type="text/css" />' . "\n";
+	$content .= "<script type='text/javascript'>var Kaltura_PluginUrl = '$plugin_url';</script>\n";
 	echo $content;
 }
 
@@ -403,19 +405,13 @@ function kaltura_add_upload_tab_interactive_video_only($content)
 
 function kaltura_upload_tab()
 {
-	// only for 2.6 and higher
-	if (KalturaHelpers::compareWPVersion("2.6", ">="))
-		wp_enqueue_style('media');
-	
+	wp_enqueue_style('media');	
 	wp_iframe('kaltura_upload_tab_content');
 }
 
 function kaltura_browse_tab()
 {
-	// only for 2.6 and higher
-	if (KalturaHelpers::compareWPVersion("2.6", ">="))
-		wp_enqueue_style('media');
-		
+	wp_enqueue_style('media');		
 	wp_iframe('kaltura_browse_tab_content');
 }
 

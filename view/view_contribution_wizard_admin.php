@@ -9,9 +9,9 @@
 	var topWindow = Kaltura.getTopWindow();
 	topWindow.Kaltura.unbindOverlayClick();
 
-	if (Kaltura.compareWPVersion("2.6", ">=")) {
+	//if (Kaltura.compareWPVersion("2.6", ">=")) {
 		topWindow.Kaltura.hackModalBoxWp26();
-	}
+	//}
 
 	// fix for IE6, scroll the page up so modal would animate in the center of the window
 	if (jQuery.browser.msie && jQuery.browser.version < 7)
