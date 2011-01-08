@@ -49,9 +49,9 @@ $flashVars["jsDelegate"] 	= "callbacksObj";
 			kalturaLogoClickHandler:kalHandler
 		};		
 		function publishHandler() {
-			if (confirm("Video successfully saved.  Click OK to close or CANCEL to keep editing.")){
-				parent.Shadowbox.close();
-			}
+			//if (confirm("Video successfully saved.  Click OK to close or CANCEL to keep editing.")){
+				//parent.Shadowbox.close();
+			//}
 		}
 		function closeHandler() {
 			parent.Shadowbox.close();
