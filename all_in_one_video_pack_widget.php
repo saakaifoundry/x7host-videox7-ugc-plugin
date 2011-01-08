@@ -3,7 +3,7 @@
 Plugin Name: All in One Video Pack Sidebar Widget Videox7 Version
 Plugin URI: http://kalturacehost.com
 Description: A sidebar widget that allows you to display the most recent posted videos and comments in your blog.  
-Version: 2.5.3.1
+Version: 2.5.3.2
 Author: rtcwp07
 Author URI: http://www.x7host.com
 */

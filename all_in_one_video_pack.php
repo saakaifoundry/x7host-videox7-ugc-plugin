@@ -2,8 +2,8 @@
 require_once('settings.php');
 require_once('lib/kaltura_client.php');
 require_once('lib/kaltura_helpers.php');
-require_once('lib/kaltura_model.php');  
- 
+require_once('lib/kaltura_model.php');
+
 // comments filter
 if (KalturaHelpers::compareWPVersion("2.5", "=")) 
 	// in wp 2.5 there was a bug in wptexturize which corrupted our tag with unicode html entities
@@ -969,7 +969,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><img border='0' src='$pluginurl/images/x7loader.gif'></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=media&action=list",
@@ -1255,7 +1255,7 @@ DELETE_JS;
 
 		$return .= '</script>';
 		//ADD X7LOADING DIV
-			$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
+			$return .= "<div id='x7loading' style='display:none'><img border='0' src='$pluginurl/images/x7loader.gif'></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=mixing&action=list",
@@ -1358,9 +1358,9 @@ if ($widget=="userposts"){
 		$return .= <<<WARNING
 		<div class="ui-widget">
       <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
-	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> 
+	    <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> 
 	    <strong>Posts submitted by you and approved for publishing:</strong>
-      </p></div>
+      </div>
 </div>
 <br />
 WARNING;
@@ -1381,7 +1381,7 @@ WARNING;
 				$tags = get_the_tags($postid);
 				$cats = get_the_category($postid);
 				$date = get_the_date();
-				$return .= "<div class='ui-corner-all' style='padding:10px;'><p>";
+				$return .= "<div class='ui-corner-all' style='padding:10px;'>";
 				$return .= "Post Title: " . $title . "<br>";
 				$return .= "Date Submitted: " . $date . "<br>";
 				$return .= "Status: Awaiting Moderation<br>";
@@ -1389,7 +1389,7 @@ WARNING;
 				//$return .= "Tags: " . foreach ($tags as $tag){echo($tag . ', ')} . "<br>";
 				//$return .= "Category(ies): " . foreach ($cats as $cat){echo($cat . ', ')} . "<br><br>";
 				$return .= $content . "<br><br>";
-				$return .="</p></div>";
+				$return .="</div>";
 			} // end foreach
 			//close master drafts div
 			$return .= "</div><br />";
@@ -1397,9 +1397,9 @@ WARNING;
 		$return .= <<<DRAFTS
 		<div class="ui-widget">
       <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;"> 
-	    <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> 
+	    <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> 
 	    <strong>Posts submitted by you and awaiting approval:</strong>
-      </p></div>
+      </div>
 </div>
 <br />
 DRAFTS;
@@ -1420,7 +1420,7 @@ DRAFTS;
 				$tags = get_the_tags($postid);
 				$cats = get_the_category($postid);
 				$date = get_the_date();
-				$return .= "<div class='ui-corner-all' style='padding:10px;'><p>";
+				$return .= "<div class='ui-corner-all' style='padding:10px;'>";
 				$return .= "Post Title: " . $title . "<br>";
 				$return .= "Date Submitted: " . $date . "<br>";
 				$return .= "Status: Awaiting Moderation<br>";
@@ -1428,7 +1428,7 @@ DRAFTS;
 				//$return .= "Tags: " . foreach ($tags as $tag){echo($tag . ', ')} . "<br>";
 				//$return .= "Category(ies): " . foreach ($cats as $cat){echo($cat . ', ')} . "<br><br>";
 				$return .= $content . "<br><br>";
-				$return .="</p></div>";
+				$return .="</div>";
 			} // end foreach
 			//close master drafts div
 			$return .= "</div>";
@@ -1455,7 +1455,6 @@ if ($widget=="makeplaylist"){
 		
 		//add javascript and info box
 		$return .= <<<INFOBOX
-		
 		<script type="text/javascript">
 		
 		//list users created playlists
@@ -1485,9 +1484,7 @@ if ($widget=="makeplaylist"){
 		})
 		.mouseup(function() {
 			scrollbar.width( "100%" );
-		})
-		.append( "<span class='ui-icon ui-icon-grip-dotted-vertical'></span>" )
-		.wrap( "<div class='ui-handle-helper-parent'></div>" ).parent();
+		}).append("<span class='ui-icon ui-icon-grip-dotted-vertical'></span>").wrap("<div class='ui-handle-helper-parent'></div>").parent();
 		
 		//change overflow to hidden now that slider handles the scrolling
 		scrollPane.css( "overflow", "hidden" );
@@ -1574,7 +1571,7 @@ if ($widget=="makeplaylist"){
 			}
 			if (valError != "error")
 			{
-				jQuery('#x7loading').html('<p><img border="0" src="$pluginurl/images/x7loader.gif"></p>');
+				jQuery('#x7loading').html('<img border="0" src="$pluginurl/images/x7loader.gif">');
 				jQuery.post(
 					"$pluginurl/x7listadd.php",
 					{'x7server': "$x7server", 'x7kalpartnerid': "$x7kalpartnerid", 'ks': "$ks", 'eids[]': arrEids, 'listname': listname, 'ul': "$user_login", 'x7bloghome': "$x7bloghome"},
@@ -1820,7 +1817,7 @@ if ($widget=="userplaylists"){
 USERPLJS;
 
 		//ADD X7LOADING DIV
-		$return .= "<div id='x7loading' style='display:none'><p><img border='0' src='$pluginurl/images/x7loader.gif'></p></div><br /><br />";
+		$return .= "<div id='x7loading' style='display:none'><img border='0' src='$pluginurl/images/x7loader.gif'></div><br /><br />";
 		
 		//Embed user uploads
 		$xmlresult = rest_helper("$x7server/api_v3/?service=playlist&action=list",

@@ -1,10 +1,10 @@
 === x7Host's Videox7 UGC Plugin ===
 Contributors: rtcwp07, Kaltura
-Donate link: http://www.kalturecehost.com/
+Donate link: http://public.exseven.com/wordpress/
 Tags: plugin, admin, images, html5, mobile, user, generated, content, x7host, videox7, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
 Tested up to: 3.0.4
-Stable tag: 2.5.3.1
+Stable tag: 2.5.3.2
 
 You, your logged in Wordpress users, and your blog visitors get cutting edge online video capabilities.  Webcam comments, collaborative editing, and more!
 
@@ -35,12 +35,7 @@ Highlights:
 * Sidebar widget showing all recent videos posted and video comments.
 * Easy installation that takes just 4 steps and a few minutes. 
 
-
-Version 2.5.3.1
--------------
-* Fixed video library bug - recommend everyone upgrade
-
-Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://www.kalturacehost.com
+Showcase your blog, see examples and pictures of the plugin and get support in our forum: http://public.exseven.com/wordpress/
 
 == Installation ==
 
@@ -79,7 +74,7 @@ Solution 2: Remove any blocking of external calls from the server.
 = I can't activate the plugin, it presents an error message after clicking Activate on the plugin list =
 It might be caused due to an old version of PHP.
 
-This plugin is written for PHP4 and PHP5 with the use of classes and static members, these are not supported on earlier versions of PHP.
+This plugin is written for PHP5 with the use of classes and static members, these are not supported on earlier versions of PHP.
 
 == Screenshots ==
 

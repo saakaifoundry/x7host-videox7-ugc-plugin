@@ -225,7 +225,7 @@ Kaltura = {
 	},
 	
 	compareWPVersion: function (compareVersion, operator) {		
-		return true;
+		return false;
 	},
 	
 	switchSidebarTab: function (sender, type, page) {
