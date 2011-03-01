@@ -266,10 +266,10 @@ function kaltura_register_js()
 	if ( is_admin() ) {
 		wp_register_script('kadmin', $plugin_url . '/js/kadmin.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kadmin' );
-		wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, false);
-		wp_enqueue_script( 'swfobject-script15' );
-		//wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
-		//wp_enqueue_script( 'swfobject-script' );
+		//wp_register_script('swfobject-script15', $plugin_url . '/js/swfobject.js', false, false, false);
+		//wp_enqueue_script( 'swfobject-script15' );
+		wp_register_script('swfobject-script', 'http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js', false, false, false);
+		wp_enqueue_script( 'swfobject-script' );
 		
 		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version(), false, false, false);
 		wp_enqueue_script( 'kaltura' );

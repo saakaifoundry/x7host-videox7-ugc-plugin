@@ -224,8 +224,87 @@ Kaltura = {
 		topWindow.jQuery("#content_tbl tr.mceFirst").show();
 	},
 	
-	compareWPVersion: function (compareVersion, operator) {		
-		return true;
+	compareWPVersion: function (compareVersion, operator) {
+		// split to arrays
+		var compareVersionArray = compareVersion.split(".");
+		
+		// remove all character except for "0-9" and "." (and hope that we won't have to add special support for beta and rc versions)
+		var wpVersion = Kaltura_WPVersion.replace(/[^0-9.]/g,"");
+		var wordpressVersionArray = wpVersion.split(".");
+		
+		
+		var maxLen = 0; 
+		
+		if (compareVersionArray.length > wordpressVersionArray.length)
+			maxLen = compareVersionArray.length;
+		else 
+			maxLen = wordpressVersionArray.length;
+		
+		// we add to every part of the version trailing zeros
+		// so [1,6] and [12,4] would be [10,6] and [12,4], then we will join each array and compare it as 2 numbers
+		for (var i = 0; i < maxLen; i++) {
+			var v1 = "0";
+			var v2 = "0";
+			
+			if (wordpressVersionArray[i])
+				v1 = wordpressVersionArray[i];
+			
+			if (compareVersionArray[i])
+				v2 = compareVersionArray[i];
+				
+			if (v1.length > v2.length)
+			{
+				for (var j = 0; j < v1.length - v2.length; j++)
+				{
+					v2 += (v2 + "0");
+				}
+			} 
+			
+			if (v1.length < v2.length)
+			{
+				for (var j = 0; j < v2.length - v1.length; j++)
+				{
+					v1 += (v1 + "0");
+				}
+			}
+			
+			wordpressVersionArray[i] = v1;
+			compareVersionArray[i] = v2;
+		}
+		
+		// now we convert the array back to number
+		var v1compare = Number(wordpressVersionArray.join(""));
+		var v2compare = Number(compareVersionArray.join(""));
+		
+		
+		// and we can just compare 2 number
+		switch(operator)
+		{
+			case ">":
+				if (v1compare > v2compare)
+					return true;
+				break;
+			case "<":
+				if (v1compare < v2compare)
+					return true;
+				break;
+			case ">=":
+				if (v1compare >= v2compare)
+					return true;
+				break;
+			case "<=":
+				if (v1compare <= v2compare)
+					return true;
+				break;
+			case "=":
+			case "==":
+			default:
+				if (v1compare == v2compare)
+					return true;
+				break;
+		}
+		
+		return false;
 	},
 	
 	switchSidebarTab: function (sender, type, page) {
