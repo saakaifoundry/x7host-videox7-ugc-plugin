@@ -276,7 +276,7 @@ function kaltura_register_js()
 	}
 	if( !is_admin() ){
 		wp_deregister_script('jquery'); 
-		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"), false, '1.4.4', false);
+		wp_register_script('jquery', ("http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"), false, '1.4.4', false);
 		wp_enqueue_script( 'jquery' );
 		
 		wp_register_script('kaltura', $plugin_url . '/js/kaltura.js?v'.kaltura_get_version(), false, false, false);
@@ -291,7 +291,7 @@ function kaltura_register_js()
 		wp_register_script('jquerytools', $plugin_url . '/js/jquery.tools.min.js', false, false, false);
 		wp_enqueue_script( 'jquerytools' );
 	//register newest jquery ui
-		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js', false, false, false);
+		wp_register_script('jqueryui-script', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js', false, false, false);
 		wp_enqueue_script( 'jqueryui-script' );
 	//register shadowbox
 		wp_register_script('shadowbox-script', $plugin_url . '/js/shadowbox.js', false, false, false);
@@ -329,7 +329,7 @@ function kaltura_head()
 	if (get_option('x7html5enabled') == 1) {
 		$html5server = KALTURA_SERVER_URL;
 		echo('<script type="text/javascript" src="http://html5.kaltura.org/js"></script>');
-		echo("<script type='text/javascript'>mw.setConfig( 'Kaltura.ServiceUrl' , '$html5server' );mw.setConfig( 'Kaltura.CdnUrl' , '$html5server' );mw.setConfig('EmbedPlayer.kalturaAttribution', false );mw.setConfig( 'EmbedPlayer.NativeControlsMobileSafari', false );</script>");
+		echo("<script type='text/javascript'>mw.setConfig( 'Kaltura.ServiceUrl' , '$html5server' );mw.setConfig( 'Kaltura.CdnUrl' , '$html5server' );mw.setConfig('EmbedPlayer.AttributionButton', false );mw.setConfig( 'EmbedPlayer.NativeControlsMobileSafari', false );</script>");
 	}
 }
 
@@ -1940,9 +1940,9 @@ function kaltura_shortcode($attrs)
 
 		$embedOptions["flashVars"] .= "&autoPlay=true";
 		$html = '
-				<div id="' . $thumbnailDivId . '" style="width:'.$width.'px;height:'.$height.'px;" class="kalturaHand" onclick="Kaltura.activatePlayer(\''.$thumbnailDivId.'\',\''.$divId.'\');">
+				<!-- <div id="' . $thumbnailDivId . '" style="width:'.$width.'px;height:'.$height.'px;" class="kalturaHand" onclick="Kaltura.activatePlayer(\''.$thumbnailDivId.'\',\''.$divId.'\');">
 					<img src="' . $thumbnailPlaceHolderUrl . '" style="" />
-				</div>
+				</div> -->
 				<div id="' . $divId . '" style="display:none;height: '.$height.'px;"">
 					<object id="kaltura_player" name="kaltura_player" type="application/x-shockwave-flash" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="' . $embedOptions["height"] . '" width="' . $embedOptions["width"] . '" xmlns:dc="http://purl.org/dc/terms/" xmlns:media="http://search.yahoo.com/searchmonkey/media/" rel="media:video" resource="' . $embedOptions["swfUrl"] . '" data="' . $embedOptions["swfUrl"] . '">
 					<param name="allowFullScreen" value="true" />

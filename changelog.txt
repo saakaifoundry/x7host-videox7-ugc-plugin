@@ -1,3 +1,8 @@
+Version 2.5.3.3
+-------------
+* The phantom add video box scrolling bug should be finally eradicated for EVERYone!
+* ALL video comments are now HTML5 (read: mobile) capable, if you so desire
+
 Version 2.5.3.2
 -------------
 * Fixed another bug with video library backend

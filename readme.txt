@@ -3,8 +3,8 @@ Contributors: rtcwp07, Kaltura
 Donate link: http://public.exseven.com/wordpress/
 Tags: plugin, admin, images, html5, mobile, user, generated, content, x7host, videox7, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
-Tested up to: 3.0.4
-Stable tag: 2.5.3.2
+Tested up to: 3.1
+Stable tag: 2.5.3.3
 
 You, your logged in Wordpress users, and your blog visitors get cutting edge online video capabilities.  Webcam comments, collaborative editing, and more!
 
@@ -12,7 +12,7 @@ You, your logged in Wordpress users, and your blog visitors get cutting edge onl
 
 This plugin is a fork of Kaltura's original "All In One Video Pack" plugin, enhanced in many ways and designed from the bottom up to be easily integrated with the self-hosted Kaltura Community Edition.
 
-To use this plugin, you need either: 1) A Kaltura Community Edition self-hosted server (get one today from x7Host, www.x7host.com), or 2) An SaaS account with Kaltura.com (free trial for up to 10 GB of video)
+To use this plugin, you need either: 1) A Kaltura Community Edition v3.0 self-hosted server (get a cloud video server today from our friends at x7Host, www.x7host.com), or 2) An SaaS account with Kaltura.com (free trial for up to 10 GB of video)
 
 This is not just another video embed tool - it includes every functionality you might need for video and rich-media, including the ability to upload/ record/import videos directly to your post, edit and remix content with both a standard and advanced video editor, enable video and webcam comments, manage and track your video content, create and edit playlists and much more.
 
