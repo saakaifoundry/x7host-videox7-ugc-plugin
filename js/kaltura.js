@@ -79,7 +79,7 @@ Kaltura = {
 		jQuery("#TB_window").animate(
 			{ 
 		        width: width + "px",
-	        	marginTop: "-" + ((height + 27) / 2) + "px",
+	        	//marginTop: "-" + ((height + 27) / 2) + "px",
 	        	marginLeft: "-" + (width / 2) + "px"
 	      	}, 
 	      	600 
@@ -155,7 +155,7 @@ Kaltura = {
 			height = 0;
 			
 		jQuery("#TB_window").css("top", null);
-		jQuery("#TB_window").css("margin-top", "-" + (height / 2) + "px");
+		//jQuery("#TB_window").css("margin-top", "-" + (height / 2) + "px");
 		jQuery("#TB_window").css("height", null);
 		
 		// backup and temporary remove the tb_position function

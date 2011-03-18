@@ -75,7 +75,7 @@
 <style type="text/css">
 	html, body { margin:0; padding:0; }
 </style>
-<script type="text/javascript" src="<?php echo KalturaHelpers::getPluginUrl(); ?>/js/swfobject.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <script type="text/javascript" src="<?php echo KalturaHelpers::getPluginUrl(); ?>/js/kaltura.js"></script>
 <script type="text/javascript" src="<?php echo KalturaHelpers::getPluginUrl(); ?>/../../../wp-includes/js/jquery/jquery.js"></script>
 
@@ -144,7 +144,7 @@
 	require_once("view/view_contribution_wizard.php");
 ?>
 <script type="text/javascript">
-	cwSwf.write("kaltura_contribution_wizard_wrapper");
+	//cwSwf.write("kaltura_contribution_wizard_wrapper");
 </script>
 </body>
 <?php endif; ?>

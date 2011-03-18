@@ -4,7 +4,7 @@ Donate link: http://public.exseven.com/wordpress/
 Tags: plugin, admin, images, html5, mobile, user, generated, content, x7host, videox7, posts, Post, comments, kaltura, participate, media library, edit, camera, podcast, record, vlog, video editor, video responses, video blog, audio, media, flickr, Facebook, mix, mixing, remix, collaboration, interactive, richmedia cms, webcam, ria, CCMixter, Jamendo, rich-media, picture, editor, player, video comments, New York Public Library, photo, video, all in one, playlist, video gallery, gallery, widget, all-in-one, transcoding, encoding, advertising, video ads, video advertising
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 2.5.3.3
+Stable tag: 2.5.3.4
 
 You, your logged in Wordpress users, and your blog visitors get cutting edge online video capabilities.  Webcam comments, collaborative editing, and more!
 
@@ -45,7 +45,7 @@ If you are installing this plugin for the first time:
 2. Paste the 'x7host-videox7-ugc-plugin' directory under the '/wp-content/plugins/' directory
 3. Activate the plugin through the 'Plugins' menu in the WordPress admin application
 4. Go to Settings > x7 UGC Settings to setup the plugin
-5. IMPORTANT!  If you are using your own KalturaCE server, you MUST edit the "settings.php" file and change the variables "KALTURA_SERVER_URL" and "KALTURA_CDN_URL" to be the URL of your KalturaCE server (without backslash) - do this BEFORE configuring/connecting the plugin through the "x7 UGC Settings" page!
+5. IMPORTANT!  If you are using your own KalturaCE server, you MUST edit the "settings.php" file and change the variables "KALTURA_SERVER_URL" and "KALTURA_CDN_URL" to be the URL of your KalturaCE server (without backslash at the end) - do this BEFORE configuring/connecting the plugin through the "x7 UGC Settings" page!
 
 If you are upgrading your current version of the plugin, or if you're upgrading from the Interactive Video plugin: 
 

@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: All in One Video Pack Sidebar Widget Videox7 Version
-Plugin URI: http://kalturacehost.com
+Plugin URI: http://public.exseven.com/wordpress
 Description: A sidebar widget that allows you to display the most recent posted videos and comments in your blog.  
-Version: 2.5.3.2
+Version: 2.5.3.4
 Author: rtcwp07
 Author URI: http://www.x7host.com
 */
@@ -56,9 +56,10 @@ class AllInOneVideoWidget
         echo '<div id="kaltura-sidebar-container"></div>' . "\n";
         echo '<script type="text/javascript">' . "\n";
         echo 'jQuery("#kaltura-posts-button").click()' . "\n";
-        echo 'var kaltura_loader = new SWFObject("'.KalturaHelpers::getPluginUrl().'/images/loader.swf", "kaltura-loader-swf", 35, 35, "9", "#000000");' . "\n";
-        echo 'kaltura_loader.addParam("wmode", "transparent");' . "\n";
-        echo 'kaltura_loader.write("kaltura-loader");' . "\n";
+	echo 'swfobject.embedSWF("'.KalturaHelpers::getPluginUrl().'/images/loader.swf", "kaltura-loader-swf", 35, 35, "9", "#000000");' . "\n";
+        //echo 'var kaltura_loader = new SWFObject("'.KalturaHelpers::getPluginUrl().'/images/loader.swf", "kaltura-loader-swf", 35, 35, "9", "#000000");' . "\n";
+        //echo 'kaltura_loader.addParam("wmode", "transparent");' . "\n";
+        //echo 'kaltura_loader.write("kaltura-loader");' . "\n";
         echo '</script>' . "\n";
         
         echo $after_widget;

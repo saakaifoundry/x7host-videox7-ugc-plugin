@@ -256,9 +256,9 @@ class KalturaHelpers
 		$url .= "/p/" . get_option("kaltura_partner_id");
 		$url .= "/sp/" . get_option("kaltura_partner_id")*100;
 		$url .= "/thumbnail";
-		if ($widgetId)
-			$url .= "/widget_id/" . $widgetId;
-		else if ($entryId)
+		//if ($widgetId)
+			//$url .= "/widget_id/" . $widgetId;
+		//else if ($entryId)
 			$url .= "/entry_id/" . $entryId;
 		$url .= "/width/" . $width;
 		$url .= "/height/" . $height;

@@ -3,7 +3,7 @@
 Plugin Name: x7Host's Videox7 UGC Plugin
 Plugin URI: http://public.exseven.com/wordpress/
 Description: Leverage the power of open source video to add user generated content to your blog.
-Version: 2.5.3.3
+Version: 2.5.3.4
 Author: rtcwp07
 Author URI: http://www.x7host.com
 */

@@ -1,3 +1,10 @@
+Version 2.5.3.4
+-------------
+* Highly recommend this upgrade for everyone
+* Fixed sidebar widget thumbnails
+* Fixed video comment contribution wizard
+* Removed some legacy code
+
 Version 2.5.3.3
 -------------
 * The phantom add video box scrolling bug should be finally eradicated for EVERYone!
